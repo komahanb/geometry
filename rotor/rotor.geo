@@ -39,14 +39,20 @@ NACA4_a2 = -0.3516 ;
 NACA4_a3 =  0.2843 ;
 NACA4_a4 = -0.1015 ;
 
+// Total number of points on the NACA airfoil
 NACA4_npts = NACA4_nspl*NACA4_pps ;
 
 NACA4_Points[] = {} ;
 NACA4_Splines[] = {} ;
 
+// The upper curve points
 For i In {0:NACA4_npts}
+    // Determine the location of each NACA point on the airfoil
+    // generate sinusoidally spaced xpoints and determine the y points based on the NACA, 
+    // z is readily available as span station
+
     x = 0.5*(1+Cos(i/NACA4_npts*Pi)) ;
-    y = NACA4_a0*Sqrt(x) + 
+    y = NACA4_a0*Sqrt(x) +  
         x*(NACA4_a1 + x*(NACA4_a2 + x*(NACA4_a3 + x*NACA4_a4))) ;
     p = newp ;
     L1 = 1-x ; L2 = x ;
@@ -54,30 +60,43 @@ For i In {0:NACA4_npts}
     	      NACA4_len_te*L2*(2*L2-1) ;
     Point(p) = {NACA4_ch*x+NACA4_le_x,  
                 y*NACA4_ch*NACA4_th/20+NACA4_le_y, 
-		NACA4_le_z, NACA4_len} ;
+		NACA4_le_z, 
+                NACA4_len} ;
     NACA4_Points[i] = p ;
 EndFor
 
+// The lower curve points
 For i In {NACA4_npts+1:2*NACA4_npts-1}
     x = 0.5*(1+Cos(i/NACA4_npts*Pi)) ;
     y = NACA4_a0*Sqrt(x) + 
         x*(NACA4_a1 + x*(NACA4_a2 + x*(NACA4_a3 + x*NACA4_a4))) ;
     p = newp ; 
+
+    L1 = 1-x ; L2 = x ;
+
+    // Quadratic for the length scale
     NACA4_len = NACA4_len_le*L1*(2*L1-1) + NACA4_len_mp*4*L1*L2 +
     	      NACA4_len_te*L2*(2*L2-1) ;
+
+    // Define the point with the quadratic length scale and point xyz
     Point(p) = {NACA4_ch*x+NACA4_le_x,  
                 -y*NACA4_ch*NACA4_th/20+NACA4_le_y, 
-		NACA4_le_z, NACA4_len} ;
+		NACA4_le_z, 
+                NACA4_len} ;
+
+    // Store into the return array
     NACA4_Points[i] = p ;
 EndFor
 
+// Lets make the splines using the points
 For i In {0:2*NACA4_nspl+NACA4_pps-1}
     c = newc ;
     Spline(c) = NACA4_Points[{i*(NACA4_pps-1):(i+1)*(NACA4_pps-1)}] ;
     NACA4_Splines[i] = c ;
 EndFor
-c = newc ; i = 2*NACA4_nspl+NACA4_pps ;
 
+// Close the spline loop logic (happens at the leading edge)
+c = newc ; i = 2*NACA4_nspl+NACA4_pps ;
 Spline(c) = {NACA4_Points[{i*(NACA4_pps-1):(2*NACA4_npts-1)}],
 	     NACA4_Points[0]} ;
 
