@@ -177,9 +177,9 @@ NACA4_nspl = 8 ;
 NACA4_pps = 4 ;
 
 // The characteristic lengths at leading, mid and trailing edges
-NACA4_len_le = BaseLength/20 ;
-NACA4_len_mp = BaseLength/10 ;
-NACA4_len_te = BaseLength/20 ;
+NACA4_len_le = BaseLength/2 ;
+NACA4_len_mp = BaseLength/1 ;
+NACA4_len_te = BaseLength/2 ;
 
 // Airfoil thickness
 NACA4_th = 12 ;
@@ -233,9 +233,9 @@ splines[] = {splines[],NACA4_Splines[]} ;
 
 Root = 0.20 ;
 
-NACA4_len_le = BaseLength/20 ;
-NACA4_len_mp = BaseLength/10 ;
-NACA4_len_te = BaseLength/20 ;
+NACA4_len_le = BaseLength/2 ;
+NACA4_len_mp = BaseLength/1 ;
+NACA4_len_te = BaseLength/2 ;
 NACA4_ch = Root*Taper ;
 NACA4_le_x = Span*Sin(Sweep) ;
 NACA4_le_z = Span ;
