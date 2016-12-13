@@ -58,9 +58,9 @@ For i In {0:NACA4_npts}
     L1 = 1-x ; L2 = x ;
     NACA4_len = NACA4_len_le*L1*(2*L1-1) + NACA4_len_mp*4*L1*L2 +
     	      NACA4_len_te*L2*(2*L2-1) ;
-    Point(p) = {NACA4_ch*x+NACA4_le_x,  
-                y*NACA4_ch*NACA4_th/20+NACA4_le_y, 
+    Point(p) = {NACA4_ch*x+NACA4_le_x,          
 		NACA4_le_z, 
+                y*NACA4_ch*NACA4_th/20+NACA4_le_y, 
                 NACA4_len} ;
     NACA4_Points[i] = p ;
 EndFor
@@ -79,9 +79,9 @@ For i In {NACA4_npts+1:2*NACA4_npts-1}
     	      NACA4_len_te*L2*(2*L2-1) ;
 
     // Define the point with the quadratic length scale and point xyz
-    Point(p) = {NACA4_ch*x+NACA4_le_x,  
-                -y*NACA4_ch*NACA4_th/20+NACA4_le_y, 
+    Point(p) = {NACA4_ch*x+NACA4_le_x,                  
 		NACA4_le_z, 
+                -y*NACA4_ch*NACA4_th/20+NACA4_le_y, 
                 NACA4_len} ;
 
     // Store into the return array
@@ -189,8 +189,8 @@ NACA4_ch = Root*Taper ;
 
 // x,y,z location of the leading edge
 NACA4_le_x = Span*Sin(Sweep) ;
-NACA4_le_y = 0.0 ;
 NACA4_le_z = 0.0 ;
+NACA4_le_y = 0.0 ;
 
 //////////////////////////////////////////////////////////////////////
 // Create a section left
@@ -219,8 +219,8 @@ NACA4_len_mp = BaseLength ;
 NACA4_len_te = BaseLength/2 ;
 NACA4_ch = Root*Taper ;
 NACA4_le_x = Span*Sin(Sweep) ;
-NACA4_le_y = 0.0 ;
 NACA4_le_z = 0.25*Span ;
+NACA4_le_y = 0.0 ;
 
 Call NACA4 ;
 
@@ -238,8 +238,8 @@ NACA4_len_mp = BaseLength/10 ;
 NACA4_len_te = BaseLength/20 ;
 NACA4_ch = Root*Taper ;
 NACA4_le_x = Span*Sin(Sweep) ;
-NACA4_le_y = 0.0 ;
 NACA4_le_z = Span ;
+NACA4_le_y = 0.0 ;
 
 Call NACA4 ;
 
