@@ -1,5 +1,6 @@
 # Import some utilities
 import numpy as np
+import argparse
 import sys, traceback
 
 # Read the input file
@@ -16,7 +17,6 @@ def readInputFile(filename):
     return content
 
 def getElementID():
-    inputfile = 'wing.bdf'
     bdf       = readInputFile(inputfile)
     tag  = []
     for line in bdf:
@@ -34,7 +34,6 @@ def remove_duplicates(x):
     return a
 
 def getNodesForElementID(id):
-    inputfile = 'wing.bdf'
     bdf       = readInputFile(inputfile)
     node_idx  = []
     skip = False
@@ -80,21 +79,36 @@ def writeSPC(id):
         fp.close()
     return
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--input', type=str, default='wing.bdf',
+                    help='BDF Input file')
+
+# Retrieve the arguments and set them for later use
+args = parser.parse_args()
+inputfile = args.input
+
 # Get all the elementID tags defined in the mesh
 print "Element IDs in the mesh"
 eid = getElementID()
 print eid
 print len(eid)
 
-id = 80
+# Look for the Boundary condition surface using two idenfying nodes
+bc_index = [1,1]
+for id in eid:
+    nodes = getNodesForElementID(id)  
+    if bc_index[0] in nodes and bc_index[1] in nodes:
+        bc_id = id
+        print "BC ID", id
+        break
+
+# Print all the nodes in the BC surface
+id = bc_id
 print "Nodes belonging to ID:", id
 nodes = getNodesForElementID(id)
 print nodes
 print "Total nodes", len(nodes)
 
-for entry in nodes:
-    if entry == 4481:
-        print "yes"
-
-
-writeSPC(80)
+# Write out the BC as a separate file
+print "BCs writted out as "+ inputfile + ".bc"
+writeSPC(id)
