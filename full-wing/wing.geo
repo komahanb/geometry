@@ -44,6 +44,8 @@ NACA4_npts = NACA4_nspl*NACA4_pps ;
 NACA4_Points[] = {} ;
 NACA4_Splines[] = {} ;
 
+my_surfaces[] = {} ;
+
 For i In {0:NACA4_npts}
     x = 0.5*(1+Cos(i/NACA4_npts*Pi)) ;
     y = NACA4_a0*Sqrt(x) + 
@@ -108,17 +110,22 @@ Line(c0) = {SJ_points[SJ_offp1], SJ_points[SJ_offp2]} ;
 
 j = SJ_step-1 ;
 For i In {0:SJ_n_spline-1}
+    // Make a new line
     c1 = newc ;
     Printf("Making line (%g,%g)", SJ_points[SJ_offp1+j],SJ_points[SJ_offp2+j]) ;
 
     Line(c1) = {SJ_points[SJ_offp1+j],SJ_points[SJ_offp2+j]} ;
 
+    // Make a new line loop
     c = newll ;
     Printf("Making loop (%g,%g,%g,%g)",
             SJ_splines[SJ_offsp1+i],c1,-SJ_splines[SJ_offsp2+i],-c0) ;
     Line Loop(c) = {SJ_splines[SJ_offsp1+i],c1,-SJ_splines[SJ_offsp2+i],-c0} ;
+
+    // Make a new surface
     s = news ;
     Ruled Surface(s) = {c};
+    surfaces[i] = c;
     c0 = c1 ; 
     j = j + SJ_step-1 ;
 EndFor
@@ -131,6 +138,7 @@ Line Loop(c) = {SJ_splines[SJ_offsp1+SJ_n_spline],s0,
      	        -SJ_splines[SJ_offsp2+SJ_n_spline],-c0} ;
 s = news ;
 Ruled Surface(s) = {c};
+surfaces[i] = c;
 
 Return
 
@@ -143,14 +151,14 @@ Taper = 0.8 ;
 // Leading edge sweep angle
 Sweep = 15*Pi/180 ;
 
-BaseLength = 0.125 ;
+BaseLength = 0.25 ;
 
 NACA4_nspl = 8 ;
 NACA4_pps = 4 ;
 
-NACA4_len_le = BaseLength/20 ;
-NACA4_len_mp = BaseLength/10 ;
-NACA4_len_te = BaseLength/20 ;
+NACA4_len_le = BaseLength ;
+NACA4_len_mp = BaseLength ;
+NACA4_len_te = BaseLength ;
 NACA4_th = 12 ;
 NACA4_ch = Root*Taper ;
 NACA4_le_x = Span/2*Sin(Sweep) ;
@@ -167,9 +175,9 @@ Plane Surface(s) = {-ll};
 points[] = NACA4_Points[] ;
 splines[] = NACA4_Splines[] ;
 
-NACA4_len_le = BaseLength/2 ;
+NACA4_len_le = BaseLength ;
 NACA4_len_mp = BaseLength ;
-NACA4_len_te = BaseLength/2 ;
+NACA4_len_te = BaseLength ;
 //NACA4_len = 0.125 ;
 //NACA4_th = 12 ;
 NACA4_ch = Root ;
@@ -182,9 +190,9 @@ Call NACA4 ;
 points[] = {points[],NACA4_Points[]} ;
 splines[] = {splines[],NACA4_Splines[]} ;
 
-NACA4_len_le = BaseLength/20 ;
+NACA4_len_le = BaseLength/10 ;
 NACA4_len_mp = BaseLength/10 ;
-NACA4_len_te = BaseLength/20 ;
+NACA4_len_te = BaseLength/10 ;
 NACA4_ch = Root*Taper ;
 NACA4_le_x = Span/2*Sin(Sweep) ;
 NACA4_le_y = 0.0 ;
@@ -216,6 +224,8 @@ SJ_offp1 = npts ; SJ_offp2 = 2*npts ;
 SJ_offsp1 = nsplines+1 ; SJ_offsp2 = 2*nsplines+2 ;
 
 Call SectionJoin ;
+
+Physical Surface(1) = {surfaces};
 
 // 1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal, 7=BAMG, 8=DelQuad
 //Mesh.Algorithm=8
