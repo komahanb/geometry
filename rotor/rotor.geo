@@ -153,31 +153,52 @@ Ruled Surface(s) = {c};
 
 Return
 
-// Root chord
-Root = 1.0 ;
-// Wing span
-Span = 4 ;
-// Taper ratio, (Tip chord)/(Root chord)
-Taper = 0.8 ;
-// Leading edge sweep angle
-Sweep = 15*Pi/180 ;
+//////////////////////////////////////////////////////////////////////
+// Main program
+//////////////////////////////////////////////////////////////////////
 
+// section left chord1
+Root = 0.125 ;
+
+// Wing span m
+Span = 5 ;
+
+// Taper ratio, (Tip chord)/(Root chord)
+Taper = 1.0 ;
+
+// Leading edge sweep angle
+Sweep = 0*Pi/180 ;
+
+// Defines the mesh characteristic length
 BaseLength = 0.125 ;
 
+// Number of splines and points per spline
 NACA4_nspl = 8 ;
 NACA4_pps = 4 ;
 
+// The characteristic lengths at leading, mid and trailing edges
 NACA4_len_le = BaseLength/20 ;
 NACA4_len_mp = BaseLength/10 ;
 NACA4_len_te = BaseLength/20 ;
+
+// Airfoil thickness
 NACA4_th = 12 ;
+
+// chord as a function of taper
 NACA4_ch = Root*Taper ;
-NACA4_le_x = Span/2*Sin(Sweep) ;
+
+// x,y,z location of the leading edge
+NACA4_le_x = Span*Sin(Sweep) ;
 NACA4_le_y = 0.0 ;
-NACA4_le_z = -Span/2 ;
+NACA4_le_z = 0.0 ;
+
+//////////////////////////////////////////////////////////////////////
+// Create a section left
+//////////////////////////////////////////////////////////////////////
 
 Call NACA4 ;
 
+// Define the left boundary surface
 ll = newll ;
 Line Loop(ll) = NACA4_Splines[] ;
 s = news ;
@@ -186,28 +207,39 @@ Plane Surface(s) = {-ll};
 points[] = NACA4_Points[] ;
 splines[] = NACA4_Splines[] ;
 
+//////////////////////////////////////////////////////////////////////
+// Create a section mid
+//////////////////////////////////////////////////////////////////////
+
+// section mid chord
+Root = 0.20 ;
+
 NACA4_len_le = BaseLength/2 ;
 NACA4_len_mp = BaseLength ;
 NACA4_len_te = BaseLength/2 ;
-//NACA4_len = 0.125 ;
-//NACA4_th = 12 ;
-NACA4_ch = Root ;
-NACA4_le_x = 0.0 ;
+NACA4_ch = Root*Taper ;
+NACA4_le_x = Span*Sin(Sweep) ;
 NACA4_le_y = 0.0 ;
-NACA4_le_z = 0.0 ;
+NACA4_le_z = 0.25*Span ;
 
 Call NACA4 ;
 
 points[] = {points[],NACA4_Points[]} ;
 splines[] = {splines[],NACA4_Splines[]} ;
 
+//////////////////////////////////////////////////////////////////////
+// Create a section right
+//////////////////////////////////////////////////////////////////////
+
+Root = 0.20 ;
+
 NACA4_len_le = BaseLength/20 ;
 NACA4_len_mp = BaseLength/10 ;
 NACA4_len_te = BaseLength/20 ;
 NACA4_ch = Root*Taper ;
-NACA4_le_x = Span/2*Sin(Sweep) ;
+NACA4_le_x = Span*Sin(Sweep) ;
 NACA4_le_y = 0.0 ;
-NACA4_le_z = Span/2 ;
+NACA4_le_z = Span ;
 
 Call NACA4 ;
 
@@ -218,6 +250,9 @@ Plane Surface(s) = {ll};
 
 points[] = {points[],NACA4_Points[]} ;
 splines[] = {splines[],NACA4_Splines[]} ;
+
+
+
 
 npts = 2*NACA4_npts ;
 nsplines = 2*NACA4_nspl+NACA4_pps ;
