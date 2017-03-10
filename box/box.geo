@@ -1,20 +1,25 @@
- Point(1) = {-100, 100, 0, 1e+22};
- Point(2) = {100, 100, 0, 1e+22};
- Point(3) = {100, -100, 0, 1e+22};
- Point(4) = {-100, -100, 0, 1e+22};
+x_start =  0.000;
+x_end   =  2.000;
+y_start =  0.000;
+y_end   =  0.121;
 
- Line(1) = {1, 2};
- Line(2) = {2, 3};
- Line(3) = {3, 4};
- Line(4) = {4, 1};
+Point(1) = {-100,  1000, 0, 1e+22};
+Point(2) = {100 ,  1000, 0, 1e+22};
+Point(3) = {100 , -1000, 0, 1e+22};
+Point(4) = {-100, -1000, 0, 1e+22};
 
- Line Loop(6) = {4, 1, 2, 3};
+Line(1) = {1, 2};
+Line(2) = {2, 3};
+Line(3) = {3, 4};
+Line(4) = {4, 1};
 
- Plane Surface(6) = {6};
+Line Loop(6) = {4, 1, 2, 3};
 
- Physical Volume("internal") = {1};
+Plane Surface(6) = {6};
 
- Extrude {0, 0, 10} {
+Physical Volume("internal") = {1};
+
+Extrude {0, 0, 10} {
   Surface{6};
   Layers{1};
   Recombine;
