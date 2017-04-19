@@ -90,7 +90,7 @@ NACA4_Splines[i] = c ;
 
 Return
 
-cl       = 0.1;   // characteristic length of the mesh
+cl       = 0.01; // characteristic length of the mesh //0.01
 chord    = 0.121; // chord of the airfoil
 r_cutout = 0.44;  // cutout radius of the root
 R        = 2.0;   // Tip radius
@@ -112,12 +112,13 @@ dtheta   = theta_tw/(R-r_cutout)*Pi/180; //linear twist rate (rad/m)
 
 // NACA4_npts = NACA4_nspl*NACA4_pps ;
 
-NACA4_nspl   = 5 ;
+NACA4_nspl   = 4 ;
 NACA4_pps    = 5 ;
 
 NACA4_len_le = cl ; // unused
 NACA4_len_mp = cl ; // unused
 NACA4_len_te = cl ; // unused
+
 NACA4_th     = 12 ;
 NACA4_ch     = 0.121 ;
 NACA4_le_x   = 0.0 ; // Span/2*Sin(Sweep) ;
@@ -141,17 +142,17 @@ Plane Surface(s) = {-ll};
 // Translate {0, r_tw,0}{ NACA4_Points{0:NACA4_npts};}
 
 //Extrude the airfoil toward the rotor tip with negative linear twist
-//Extrude { {0, R-r_tw, 0}, {0,1,0} , {0,0,0} , (R-r_tw)*dtheta} {
-//Surface{s}; 
-//Layers{(R-r_tw)/cl}; 
-//Recombine;
-//}
-//Coherence;
+Extrude { {0, R-r_tw, 0}, {0,1,0} , {0,0,0} , (R-r_tw)*dtheta} {
+Surface{s}; 
+Layers{(R-r_tw)/cl}; 
+Recombine;
+}
+Coherence;
 
 //Extrude the airfoil toward the rotor hub with positive linear twist
-//Extrude { {0,r_cutout-r_tw,0}, {0,1,0}, {0,0,0}, (r_cutout-r_tw)*dtheta} {
-// Surface{s}; 
-// Layers{(r_tw-r_cutout)/cl}; 
-// Recombine;
-//}
-//Coherence;
+Extrude { {0,r_cutout-r_tw,0}, {0,1,0}, {0,0,0}, (r_cutout-r_tw)*dtheta} {
+ Surface{s}; 
+ Layers{(r_tw-r_cutout)/cl}; 
+ Recombine;
+}
+Coherence;
