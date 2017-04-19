@@ -76,14 +76,14 @@ For i In {NACA4_npts+1:2*NACA4_npts-1}
 EndFor
 
 // Create splines from points
-For i In {0:2*NACA4_nspl+NACA4_pps-1}
+For i In {0:2*NACA4_nspl}
     c = newc ;
     Spline(c) = NACA4_Points[{i*(NACA4_pps-1):(i+1)*(NACA4_pps-1)}] ;
     NACA4_Splines[i] = c ;
 EndFor
 
 c = newc ; 
-i = 2*NACA4_nspl + NACA4_pps ; // key to correct the spacing
+i = 2*NACA4_nspl+1 ; // key to correct the spacing
 Spline(c) = {NACA4_Points[{i*(NACA4_pps-1):(2*NACA4_npts-1)}],
 	     NACA4_Points[0]} ;
 NACA4_Splines[i] = c ;
@@ -109,8 +109,12 @@ dtheta   = theta_tw/(R-r_cutout)*Pi/180; //linear twist rate (rad/m)
 // NACA4_nspl     : number of splines on section
 // NACA4_pps      : number of points per spline
 
-NACA4_nspl   = 4 ;
-NACA4_pps    = 2 ;
+
+// NACA4_npts = NACA4_nspl*NACA4_pps ;
+
+NACA4_nspl   = 5 ;
+NACA4_pps    = 5 ;
+
 NACA4_len_le = cl ; // unused
 NACA4_len_mp = cl ; // unused
 NACA4_len_te = cl ; // unused
@@ -137,24 +141,17 @@ Plane Surface(s) = {-ll};
 // Translate {0, r_tw,0}{ NACA4_Points{0:NACA4_npts};}
 
 //Extrude the airfoil toward the rotor tip with negative linear twist
-Extrude { {0, R-r_tw, 0}, {0,1,0} , {0,0,0} , (R-r_tw)*dtheta} {
- Surface{s}; 
- Layers{(R-r_tw)/cl}; 
- Recombine;
-}
-Coherence;
+//Extrude { {0, R-r_tw, 0}, {0,1,0} , {0,0,0} , (R-r_tw)*dtheta} {
+//Surface{s}; 
+//Layers{(R-r_tw)/cl}; 
+//Recombine;
+//}
+//Coherence;
 
 //Extrude the airfoil toward the rotor hub with positive linear twist
-Extrude {{0,r_cutout-r_tw,0}, {0,1,0}, {0,0,0}, (r_cutout-r_tw)*dtheta} {
- Surface{s}; 
- Layers{(r_tw-r_cutout)/cl}; 
- Recombine;
-}
-Coherence;
-
-//Extrude { {0,(r_cutout-r_tw)/2,0}, {0,1,0}, {0,0,0}, (r_cutout-r_tw)/2*dtheta} {
+//Extrude { {0,r_cutout-r_tw,0}, {0,1,0}, {0,0,0}, (r_cutout-r_tw)*dtheta} {
 // Surface{s}; 
-// Layers{(r_tw-r_cutout)/(2*cl)}; 
+// Layers{(r_tw-r_cutout)/cl}; 
 // Recombine;
 //}
 //Coherence;
