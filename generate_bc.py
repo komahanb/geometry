@@ -246,6 +246,7 @@ if len(bc_cids) != 0:
 # Write out the user supplied BC nodes as SPC entries in a separate
 # file
 bc_nodes = strtolist(args.boundary_nodes)
+print "User specified BC nodes are:", bc_nodes
 if len(bc_nodes) != 0:
     bc_file = bdf_file + '.nodes' + '.bc'
     print "BCs written out as " + bc_file
