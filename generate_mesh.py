@@ -49,7 +49,7 @@ def getGmshOptions(tag_type):
     '''
     These are the options that we use for our purposes in TACS
     '''
-    gmsh_string = "Mesh.ElementOrder=2; Mesh.Algorithm=8; Mesh.SubdivisionAlgorithm=1; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
+    gmsh_string = "Mesh.ElementOrder=2; Mesh.Algorithm=6; Mesh.Smoothing=5; Mesh.RecombinationAlgorithm=0; Mesh.SubdivisionAlgorithm=1; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
     return gmsh_string
 
 def remove_duplicates(x):
