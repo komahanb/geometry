@@ -31,9 +31,22 @@ Transfinite Surface {6};
 Recombine Surface {6};
 
 //+
-Extrude {0, 0, -h1} {
+s[] = Extrude {0, 0, -h1} {
   Surface{6};
   Layers{h1/cl}; 
   Recombine;
 };
 Coherance;
+
+//surfaces contains in the following order:
+//[0] - front surface (opposed to source surface)
+//[1] - extruded volume
+
+//[2] - bottom surface (belonging to 1st line in "Line Loop (6)")
+//[3] - right surface (belonging to 2nd line in "Line Loop (6)")
+//[4] - top surface (belonging to 3rd line in "Line Loop (6)")
+//[5] - left surface (belonging to 4th line in "Line Loop (6)") 
+// Looking from TOP at XY plane according to gmsh convention
+
+Physical Surface("bottom_hub_surface", 3) = s[0];
+Physical Surface("lateral_surface", 4) = {s[2], s[3], s[4], s[5]};
