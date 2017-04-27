@@ -1,13 +1,15 @@
+h1 = 0.25; // 10 times thickness
+cl = 0.05;
 //+
-Point(1) = {0, 0, 0, 0.1};
+Point(1) = {0, 0, 0, cl};
 //+
-Point(2) = {0.22, 0, 0, 0.1};
+Point(2) = {0.22, 0, 0, cl};
 //+
-Point(3) = {0, 0.22, 0, 0.1};
+Point(3) = {0, 0.22, 0, cl};
 //+
-Point(4) = {-0.22, 0, 0, 0.1};
+Point(4) = {-0.22, 0, 0, cl};
 //+
-Point(5) = {0, -0.22, 0, 0.1};
+Point(5) = {0, -0.22, 0, cl};
 //+
 Circle(1) = {2, 1, 3};
 //+
@@ -25,7 +27,13 @@ Plane Surface(6) = {5};
 //+
 Physical Surface("top_hub_surface",2) = {6};
 
+Transfinite Surface {6};
+Recombine Surface {6};
+
 //+
-Extrude {0, 0, -0.5} {
+Extrude {0, 0, -h1} {
   Surface{6};
+  Layers{h1/cl}; 
+  Recombine;
 }
+Coherance;
