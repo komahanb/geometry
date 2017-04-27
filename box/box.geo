@@ -17,10 +17,10 @@ thickness = thickness_chord*chord;
 
 char_len = thickness;
 
-Point(1) = {y_end, x_start, 0, char_len};
-Point(2) = {y_end, x_end, 0, char_len};
-Point(3) = {y_start, x_end, 0, char_len};
-Point(4) = {y_start, x_start, 0, char_len};
+Point(1) = { x_start , y_end   ,0, char_len};
+Point(2) = { x_end   , y_end   ,0, char_len};
+Point(3) = { x_end   , y_start ,0, char_len};
+Point(4) = { x_start , y_start ,0, char_len};
 
 Line(1) = {1, 2};
 Line(2) = {2, 3};
@@ -61,14 +61,14 @@ Physical Surface("top") = surfaceVector[4];
 Physical Surface("left") = surfaceVector[5];
 Physical Surface("back") = {1};
 
-surfaceVector2[] = Extrude {0, 0, 10.0*thickness} {
-Surface{surfaceVector[1]};
-Layers{1};
-Recombine;
-};
-
-Physical Surface("front2") = surfaceVector2[0];
-Physical Surface("bottom2") = surfaceVector2[2];
-Physical Surface("right2") = surfaceVector2[3];
-Physical Surface("top2") = surfaceVector2[4];
-Physical Surface("left2") = surfaceVector2[5];
+// surfaceVector2[] = Extrude {0, 0, 10.0*thickness} {
+// Surface{surfaceVector[1]};
+// Layers{1};
+// Recombine;
+// };
+// 
+// Physical Surface("front2") = surfaceVector2[0];
+// Physical Surface("bottom2") = surfaceVector2[2];
+// Physical Surface("right2") = surfaceVector2[3];
+// Physical Surface("top2") = surfaceVector2[4];
+// Physical Surface("left2") = surfaceVector2[5];
