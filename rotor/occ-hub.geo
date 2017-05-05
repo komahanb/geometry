@@ -117,3 +117,8 @@ Line Loop(ll) = NACA4_Splines[] ;
 
 s = news ;
 Plane Surface(s) = {ll};
+Extrude {0, R, 0} {
+  Surface{s};
+  Layers{(R-r_cutout)/cl};
+}
+Coherence;
