@@ -17,9 +17,9 @@ lower_swash_height = DefineNumber[ 0.1*shaft_height , Name "Parameters/lower_swa
 hub_height         = DefineNumber[ 0.2*shaft_height , Name "Parameters/hub_height" ];
 
 // Origin of the coordinate system
-xo = DefineNumber[ 1, Name "Parameters/xo" ];
-yo = DefineNumber[ 1, Name "Parameters/yo" ];
-zo = DefineNumber[ 1, Name "Parameters/zo" ];
+xo = DefineNumber[ 0, Name "Parameters/xo" ];
+yo = DefineNumber[ 0, Name "Parameters/yo" ];
+zo = DefineNumber[ 0, Name "Parameters/zo" ];
 
 // z-location of the baseplate cylinder's base center
 x_base        = DefineNumber[ xo + 0                                , Name "Parameters/x_base" ];
