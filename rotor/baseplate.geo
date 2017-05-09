@@ -7,8 +7,6 @@ SetFactory("OpenCASCADE");
 Include "Parameters.geo";
 Include "Functions.geo";
 
-inner_base_radius = DefineNumber[ shaft_radius, Name "Parameters/inner_base_radius" ];
-
 // Create the hollow cylinder for main base plate
 xcy = x_base;
 ycy = y_base;

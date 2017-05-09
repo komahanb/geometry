@@ -14,5 +14,6 @@ vhub = newv;
 Cylinder(vhub) = {xo, yo, zo+z_hub, 0, 0, hub_height, hub_radius, 2*Pi};
 Printf("Created hub volume (%g)");
 
+// 
 vtot = newv;
 BooleanUnion(vtot) = { Volume{vshaft}; Delete; }{ Volume{vhub}; Delete; };
