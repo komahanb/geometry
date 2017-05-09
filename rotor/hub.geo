@@ -1,31 +1,18 @@
-//+
-Point(1) = {0, 0, 0, 0.1};
-//+
-Point(2) = {0.22, 0, 0, 0.1};
-//+
-Point(3) = {0, 0.22, 0, 0.1};
-//+
-Point(4) = {-0.22, 0, 0, 0.1};
-//+
-Point(5) = {0, -0.22, 0, 0.1};
-//+
-Circle(1) = {2, 1, 3};
-//+
-Circle(2) = {3, 1, 4};
-//+
-Circle(3) = {4, 1, 5};
-//+
-Circle(4) = {5, 1, 2};
-//+
-Physical Line("top_hub_edge", 1) = {1, 2, 3, 4};
-//+
-Line Loop(5) = {1, 2, 3, 4};
-//+
-Plane Surface(6) = {5};
-//+
-Physical Surface("top_hub_surface",2) = {6};
+// Gmsh project created on Wed May  3 17:53:11 2017
+SetFactory("OpenCASCADE");
 
-//+
-Extrude {0, 0, -0.5} {
-  Surface{6};
-}
+Include "Parameters.geo";
+Include "Functions.geo";
+
+// Shaft cylinder
+vshaft = newv;
+Cylinder(vshaft) = {xo, yo, zo, 0, 0, shaft_height, shaft_radius, 2*Pi};
+Printf("Created shaft volume (%g)");
+
+// Hub cylinder
+vhub = newv;
+Cylinder(vhub) = {xo, yo, zo+z_hub, 0, 0, hub_height, hub_radius, 2*Pi};
+Printf("Created hub volume (%g)");
+
+vtot = newv;
+BooleanUnion(vtot) = { Volume{vshaft}; Delete; }{ Volume{vhub}; Delete; };
