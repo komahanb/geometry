@@ -111,7 +111,7 @@ hcy = base_height;
 rcy = inner_base_radius;
 Rcy = base_radius;
 angle = 2*Pi;
-Call HollowCylinder;
+Call HollowCylinderZ;
 Printf("Baseplate volume is (%g)", NewVolume);
 
 // Add push rod hole at 90 degrees
