@@ -4,9 +4,8 @@
 
 SetFactory("OpenCASCADE");
 
-Include "parameters.geo";
-Include "HollowCylinder.geo";
-Include "PushRod.geo";
+Include "Parameters.geo";
+Include "Functions.geo";
 
 pushrod_base_radius = 0.05*base_radius;
 pushrod_head_radius = 0.10*base_radius;
