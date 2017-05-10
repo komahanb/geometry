@@ -234,7 +234,7 @@ print "Mesh file     : ", mesh_file
 physical_surface = 0
 
 # Execute gmsh with the geo file with tag 
-call(["gmsh", "-2", geometry_file, "-o", mesh_file, "-string", getGmshOptions(1)])
+call(["gmsh", "-2", geometry_file, " -o ", mesh_file, " -string ", getGmshOptions(1)])
 
 # Read the contents of the generated BDF file from GMSH. We read the
 # BDF file to identify the nodes to which the BCs need to be applied
@@ -250,7 +250,7 @@ print "Number of components : ", len(cids)
 # Execute gmsh with the new geo file containing physical surfaces
 tmp_geo_file = geometry_file + '.tmp'
 writeRenumberedComponents(tmp_geo_file, cids)
-call(["gmsh", "-2", tmp_geo_file, "-o", mesh_file, "-string", getGmshOptions(2)])
+call(["gmsh", "-2", tmp_geo_file, " -o ", mesh_file, " -string ", getGmshOptions(2)])
 
 ## # The user might already know the node ids that are subject to
 ## # boundary conditions
