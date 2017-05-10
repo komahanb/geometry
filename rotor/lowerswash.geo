@@ -7,18 +7,17 @@ SetFactory("OpenCASCADE");
 Include "Parameters.geo";
 Include "Functions.geo";
 
+aoffset = 0;
+
 //-------------------------------------------------------------------//
 // Add a block to the swash plate
 //-------------------------------------------------------------------//
 
-roffset = lower_swash_radius - small ;
-aoffset = 0;
-
-dxtmp = base_radius-lower_swash_radius+small/2;
-dytmp = 0.5*lower_swash_radius;
+dxtmp = base_radius;
+dytmp = 1.5*link_length;
 dztmp = lower_swash_height;
 
-xtmp = x_lower_swash + lower_swash_radius -small/2;
+xtmp = x_lower_swash;
 ytmp = y_lower_swash - dytmp/2.0;
 ztmp = z_lower_swash;
 
@@ -37,19 +36,12 @@ xtmp = base_radius*Cos(aoffset);
 ytmp = base_radius*Sin(aoffset) + link_length/2.0;
 ztmp = z_lower_swash;
 
-//dxtmp = -base_radius/10.0;
-//dytmp = link_length;
-//dztmp = lower_swash_height;
-//
-//xtmp = base_radius;
-//ytmp = y_lower_swash - dytmp/2.0;
-//ztmp = z_lower_swash;
-
 vsmallblock = newv;
 Block(vsmallblock) = {xtmp, ytmp, ztmp, dxtmp, dytmp, dztmp};
 
-vblocks = newv;
-BooleanDifference(vblocks) = { Volume{vblock}; Delete; }{ Volume{vsmallblock}; Delete; };
+vtot = newv;
+BooleanDifference(vtot) = { Volume{vblock}; Delete; }{ Volume{vsmallblock}; Delete; };
+
 
 //------------------------------------------------------------------//
 // Cylindrical link
@@ -72,11 +64,32 @@ Sphere(vspheretmp) = {xlink, ylink + link_length/2.0 , zlink, pushrod_sphere_rad
 vlink  = newv;
 BooleanUnion(vlink) = { Volume{vlinktmp}; Delete;}{ Volume{vspheretmp}; Delete;};
 
-vconn1 = newv;
-BooleanUnion(vconn1) = { Volume{vblocks}; Delete;}{ Volume{vlink}; Delete;};
+// Add the spherical headed connector to the total volume of the plate
+v = newv;
+BooleanUnion(v) = { Volume{vtot}; Delete;}{ Volume{vlink}; Delete;};
+
+//v = Fillet{v}{11, 18, 25, 23, 7, 5, 6, 21, 19, 20, 12, 17, 22, 9, 16, 14, 8, 10}{0.0025};
+//Printf("newvol %g", v);
+
+//-------------------------------------------------------------------//
+//                   MAIN CYLINDRICAL PLATE
+//-------------------------------------------------------------------//
+
+vcyl = newv;
+Cylinder(vcyl) = {x_lower_swash, y_lower_swash, z_lower_swash, 0, 0, lower_swash_height, lower_swash_radius, 2*Pi};
+
+// Remove the piece separately
+vpiece = newv;
+BooleanDifference(vpiece) = { Volume{v}; Delete;}{ Volume{vcyl};};
+
+// Now add the piece to the cylinder
+vnew = newv;
+BooleanUnion(vnew) = { Volume{vcyl}; Delete;}{ Volume{vpiece}; Delete;};
+
+//vnew = Fillet{vnew}{23, 24, 28, 14}{fillet_radius};
 
 out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
-Duplicata { Volume{vconn1}; }
+Duplicata { Volume{vnew}; }
 };
 vconn2 = out[0];
 
@@ -90,34 +103,25 @@ Duplicata { Volume{vconn3}; }
 };
 vconn4 = out[0];
 
-// create a cylinder
+// Unite all volumes into one
+v1 = newv;
+BooleanUnion(v1) = { Volume{vconn3}; Delete;}{ Volume{vconn4}; Delete;};
+Coherence;
 
-X_cylinder = xo + x_lower_swash;
-Y_cylinder = yo + y_lower_swash;
-Z_cylinder = zo + z_lower_swash;
+v2 = newv;
+BooleanUnion(v2) = { Volume{vnew}; Delete;}{ Volume{vconn2}; Delete;};
+Coherence;
 
-vcyl = newv;
-Cylinder(vcyl) = {X_cylinder, Y_cylinder, Z_cylinder, 0, 0, lower_swash_height, lower_swash_radius, 2*Pi};
+vplate = newv;
+BooleanUnion(vplate) = { Volume{v1}; Delete;}{ Volume{v2}; Delete;};
 
 // create a new sphere to cut
-X_sphere = xo + x_sphere;
-Y_sphere = yo + y_sphere;
-Z_sphere = zo + z_sphere;
-vspheretmp = newv;
-Sphere(vspheretmp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
+X_sphere =  x_sphere;
+Y_sphere =  y_sphere;
+Z_sphere =  z_sphere;
+vsp = newv;
+Sphere(vsp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
 
 vlowerswash = newv;
-BooleanDifference(vlowerswash) = { Volume{vcyl}; Delete; }{ Volume{vspheretmp}; Delete; };
+BooleanDifference(vlowerswash) = { Volume{vplate}; Delete; }{ Volume{vsp}; Delete; };
 Printf("Created lower swash volume (%g)", vlowerswash);
-
-vtmp1 = newv;
-BooleanUnion(vtmp1) = { Volume{vlowerswash}; Delete;}{ Volume{vconn1}; Delete;};
-
-vtmp2 = newv;
-BooleanUnion(vtmp2) = { Volume{vtmp1}; Delete;}{ Volume{vconn2}; Delete;};
-
-vtmp3 = newv;
-BooleanUnion(vtmp3) = { Volume{vtmp2}; Delete;}{ Volume{vconn3}; Delete;};
-
-vlowerswash = newv;
-BooleanUnion(vlowerswash) = { Volume{vtmp3}; Delete;}{ Volume{vconn4}; Delete;};

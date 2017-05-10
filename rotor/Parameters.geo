@@ -55,7 +55,7 @@ small             = DefineNumber[ 0.1*cutout_radius, Name "Parameters/small" ];
 
 inner_base_radius = DefineNumber[ shaft_radius, Name "Parameters/inner_base_radius" ];
 
-fillet_radius = DefineNumber[ 0.1, Name "Parameters/fillet_radius" ];
+fillet_radius = DefineNumber[ 0.01, Name "Parameters/fillet_radius" ];
 
 
 // 
