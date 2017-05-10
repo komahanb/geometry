@@ -14,11 +14,11 @@ Include "Functions.geo";
 roffset = lower_swash_radius - small ;
 aoffset = 0;
 
-dxtmp = base_radius-lower_swash_radius+small/4;
-dytmp = 0.35*lower_swash_radius;
+dxtmp = base_radius-lower_swash_radius+small/2;
+dytmp = link_length;
 dztmp = lower_swash_height;
 
-xtmp = x_lower_swash + lower_swash_radius -small/4;
+xtmp = x_lower_swash + lower_swash_radius -small/2;
 ytmp = y_lower_swash - dytmp/2.0;
 ztmp = z_lower_swash;
 
@@ -30,7 +30,7 @@ Block(vblock) = {xtmp, ytmp, ztmp, dxtmp, dytmp, dztmp};
 //-------------------------------------------------------------------//
 
 dxtmp = -base_radius/10.0;
-dytmp = 0.35*lower_swash_radius/2.0;
+dytmp = link_length;
 dztmp = lower_swash_height;
 
 xtmp = base_radius;
@@ -49,9 +49,6 @@ BooleanDifference(vblocks) = { Volume{vblock}; Delete; }{ Volume{vsmallblock}; D
 
 aoffset = 0.0;
 roffset = 0.9*base_radius;
-
-link_length = 0.10*base_radius;
-link_radius = base_height/8.0;
 
 xlink = roffset + link_radius*2.0;
 ylink = y_lower_swash - link_length/2.0;

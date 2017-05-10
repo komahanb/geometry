@@ -145,7 +145,7 @@ Function AddPushRodHole
 xtmp = xcy + roffset*Cos(aoffset);
 ytmp = ycy + roffset*Sin(aoffset);
 ztmp = zcy;
-hpcy = pushrod_height;
+hpcy = pushrod_height/3.0;
 rpcy = pushrod_inner_radius;
 Rpcy = pushrod_outer_radius;
 pangle = 2*Pi;

@@ -54,9 +54,6 @@ conn1_angular_pos = DefineNumber[ Pi/2, Name "Parameters/conn1_angular_pos" ];
 small             = DefineNumber[ 0.1*cutout_radius, Name "Parameters/small" ];
 
 inner_base_radius = DefineNumber[ shaft_radius, Name "Parameters/inner_base_radius" ];
-// 
-pushrod_base_radius = 0.05*base_radius;
-pushrod_head_radius = 0.10*base_radius;
 
 fillet_radius = DefineNumber[ 0.1, Name "Parameters/fillet_radius" ];
 
@@ -65,6 +62,10 @@ link_length = 0.5*lower_swash_radius/2.0;
 link_radius = base_height/8.0;
 
 pushrod_inner_radius = link_radius;
-pushrod_outer_radius = 1.5*link_radius;
+pushrod_outer_radius = 2.0*link_radius;
 
 pushrod_height = z_lower_swash + lower_swash_height/2.0;
+
+// 
+pushrod_base_radius = pushrod_inner_radius;
+pushrod_head_radius = pushrod_outer_radius;
