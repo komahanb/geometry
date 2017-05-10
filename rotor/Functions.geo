@@ -174,21 +174,19 @@ NewVolume = v;
 
 Return
 
-Function CutBlock
+Function CutBlockFromBasePlate
 //
 // roffset
 // aoffset 
+// baseplate_vnum
 
-link_length = 0.10*base_radius;
-link_radius = base_height/8.0;
-
-xtmp = x_base + roffset*Cos(aoffset);
-ytmp = y_base - link_length/2.0;
-ztmp = z_base;
-
-dxtmp = 1.0; // does not matter
-dytmp = link_length;
+dxtmp = -link_length;
+dytmp = -link_length;
 dztmp = base_height;
+
+xtmp = base_radius*Cos(aoffset);
+ytmp = base_radius*Sin(aoffset) + link_length/2.0;
+ztmp = z_base;
 
 vblock = newv;
 Block(vblock) = {xtmp, ytmp, ztmp, dxtmp, dytmp, dztmp};
@@ -201,17 +199,16 @@ Coherence;
 baseplate_vnum = v;
 
 // Create the hollow cylinder for main base plate
-xlink = roffset + link_radius*2.0;
-ylink = ytmp;
+xlink = base_radius*Cos(aoffset) - link_length/2.0;
+ylink = base_radius*Sin(aoffset) - link_length/2.0;
 zlink = z_base + base_height/2.0;
 
-hcy = base_height;
-rcy = inner_base_radius;
-Rcy = base_radius;
+hcy = link_length;
+rcy = link_radius;
 
 // Add a link along y dir
 vlink = newv;
-Cylinder(vlink) = {xlink, ylink, zlink, 0, link_length, 0, link_radius, angle};
+Cylinder(vlink) = {xlink, ylink, zlink, 0, hcy, 0, rcy, angle};
 
 // Subtract the inner cylinder from the new volume made above
 v = newv;

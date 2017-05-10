@@ -20,28 +20,28 @@ Printf("Baseplate volume is (%g)", NewVolume);
 
 // Add push rod hole at 90 degrees
 aoffset = Pi/2.0;
-roffset = 0.85*base_radius;
+roffset = pushrod_roffset;
 baseplate_vnum = NewVolume;
 Call AddPushRodHole;
 Printf("Baseplate volume is (%g)", NewVolume);
 
 // Add push rod hole at 180 degrees
 aoffset = Pi;
-roffset = 0.85*base_radius;
+roffset = pushrod_roffset;
 baseplate_vnum = NewVolume;
 Call AddPushRodHole;
 Printf("Baseplate volume is (%g)", NewVolume);
 
 // Add push rod hole at 270 degrees
 aoffset = 3.0*Pi/2.0;
-roffset = 0.85*base_radius;
+roffset = pushrod_roffset;
 baseplate_vnum = NewVolume;
 Call AddPushRodHole;
 Printf("Baseplate volume is (%g)", NewVolume);
 
 // Create a block volume to be cut from the base plate
 aoffset = 0.0;
-roffset = 0.9*base_radius;
+roffset = baseswash_slot_roffset;
 baseplate_vnum = NewVolume;
-Call CutBlock;
-Printf("Baseplate volume is (%g)", NewVolume);
+Call CutBlockFromBasePlate;
+Printf("Cutblock Baseplate volume is (%g)", NewVolume);
