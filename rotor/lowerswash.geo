@@ -86,7 +86,7 @@ BooleanDifference(vpiece) = { Volume{v}; Delete;}{ Volume{vcyl};};
 vnew = newv;
 BooleanUnion(vnew) = { Volume{vcyl}; Delete;}{ Volume{vpiece}; Delete;};
 
-//vnew = Fillet{vnew}{23, 24, 28, 14}{fillet_radius};
+vnew = Fillet{vnew}{23, 24, 28, 14}{fillet_radius};
 
 out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
 Duplicata { Volume{vnew}; }

@@ -60,16 +60,12 @@ BooleanUnion(vlink) = { Volume{vlinktmp}; Delete;}{ Volume{vspheretmp}; Delete;}
 v = newv;
 BooleanUnion(v) = { Volume{vtot}; Delete;}{ Volume{vlink}; Delete;};
 
-//v = Fillet{v}{11, 18, 25, 23, 7, 5, 6, 21, 19, 20, 12, 17, 22, 9, 16, 14, 8, 10}{0.0025};
-//Printf("newvol %g", v);
-
 //-------------------------------------------------------------------//
 //                   MAIN CYLINDRICAL PLATE
 //-------------------------------------------------------------------//
 
 vcyl = newv;
 Cylinder(vcyl) = {x_lower_swash, y_lower_swash, z_lower_swash, 0, 0, lower_swash_height, lower_swash_radius, 2*Pi};
-
 
 // Remove the piece separately
 vpiece = newv;
@@ -79,7 +75,7 @@ BooleanDifference(vpiece) = { Volume{v}; Delete;}{ Volume{vcyl};};
 vnew = newv;
 BooleanUnion(vnew) = { Volume{vcyl}; Delete;}{ Volume{vpiece}; Delete;};
 
-//vnew = Fillet{v}{23, 24, 28, 14}{fillet_radius};
+// vnew = Fillet{vnew}{23, 24, 28, 14}{fillet_radius};
 
 out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
 Duplicata { Volume{vnew}; }
@@ -108,6 +104,16 @@ Coherence;
 vplate = newv;
 BooleanUnion(vplate) = { Volume{v1}; Delete;}{ Volume{v2}; Delete;};
 
+// create a new sphere to cut
+X_sphere =  x_sphere;
+Y_sphere =  y_sphere;
+Z_sphere =  z_sphere;
+vsp = newv;
+Sphere(vsp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
+
+vlowerswash = newv;
+BooleanDifference(vlowerswash) = { Volume{vplate}; Delete; }{ Volume{vsp}; Delete; };
+Printf("Created lower swash volume (%g)", vlowerswash);
 Return
 //
 Function CreateBasePlate
