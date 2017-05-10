@@ -207,13 +207,20 @@ hcy = link_length;
 rcy = link_radius;
 
 // Add a link along y dir
-vlink = newv;
-Cylinder(vlink) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
+vlinktmp = newv;
+Cylinder(vlinktmp) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
 
-// Subtract the inner cylinder from the new volume made above
+// Add a cylindrical cap along y dir
+vlinkcap = newv;
+Cylinder(vlinkcap) = {xlink, ylink + link_length/2.0-pushrod_sphere_radius/2.0, zlink, 0,  pushrod_sphere_radius, 0, pushrod_sphere_radius, 2*Pi};
+
+// Add the cap to link
+vlink = newv;
+BooleanUnion(vlink) = { Volume{vlinktmp}; Delete; }{ Volume{vlinkcap}; Delete; };
+
+// Add the link to the existing volume
 v = newv;
 BooleanUnion(v) = { Volume{baseplate_vnum}; Delete; }{ Volume{vlink}; Delete; };
-Coherence;
 
 Newvolume = v;
 
