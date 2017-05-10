@@ -145,9 +145,9 @@ Function AddPushRodHole
 xtmp = xcy + roffset*Cos(aoffset);
 ytmp = ycy + roffset*Sin(aoffset);
 ztmp = zcy;
-hpcy = 1.25*base_height;
-rpcy = 0.05*base_radius;
-Rpcy = 0.10*base_radius;
+hpcy = pushrod_height;
+rpcy = pushrod_inner_radius;
+Rpcy = pushrod_outer_radius;
 pangle = 2*Pi;
 
 // Create a solid cylider with outer radius as dim
@@ -176,9 +176,10 @@ Return
 
 Function CutBlock
 //
-//
-//
-link_length = Rpcy;
+// roffset
+// aoffset 
+
+link_length = 0.10*base_radius;
 link_radius = base_height/8.0;
 
 xtmp = x_base + roffset*Cos(aoffset);

@@ -57,3 +57,14 @@ inner_base_radius = DefineNumber[ shaft_radius, Name "Parameters/inner_base_radi
 // 
 pushrod_base_radius = 0.05*base_radius;
 pushrod_head_radius = 0.10*base_radius;
+
+fillet_radius = DefineNumber[ 0.1, Name "Parameters/fillet_radius" ];
+
+// 
+link_length = 0.5*lower_swash_radius/2.0;
+link_radius = base_height/8.0;
+
+pushrod_inner_radius = link_radius;
+pushrod_outer_radius = 1.5*link_radius;
+
+pushrod_height = z_lower_swash + lower_swash_height/2.0;
