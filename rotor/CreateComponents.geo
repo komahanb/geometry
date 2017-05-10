@@ -107,3 +107,83 @@ BooleanUnion(vlowerswash) = { Volume{vtmp3}; Delete;}{ Volume{vconn4}; Delete;};
 
 Return
 //
+Function CreateBasePlate
+
+// Create the hollow cylinder for main base plate
+xcy = x_base;
+ycy = y_base;
+zcy = z_base;
+hcy = base_height;
+rcy = inner_base_radius;
+Rcy = base_radius;
+angle = 2*Pi;
+Call HollowCylinderZ;
+Printf("Baseplate volume is (%g)", NewVolume);
+
+// Add push rod hole at 90 degrees
+aoffset = Pi/2.0;
+roffset = pushrod_roffset;
+baseplate_vnum = NewVolume;
+Call AddPushRodHole;
+Printf("Baseplate volume is (%g)", NewVolume);
+
+// Add push rod hole at 180 degrees
+aoffset = Pi;
+roffset = pushrod_roffset;
+baseplate_vnum = NewVolume;
+Call AddPushRodHole;
+Printf("Baseplate volume is (%g)", NewVolume);
+
+// Add push rod hole at 270 degrees
+aoffset = 3.0*Pi/2.0;
+roffset = pushrod_roffset;
+baseplate_vnum = NewVolume;
+Call AddPushRodHole;
+Printf("Baseplate volume is (%g)", NewVolume);
+
+// Create a block volume to be cut from the base plate
+aoffset = 0.0;
+baseplate_vnum = NewVolume;
+Call CutBlockFromBasePlate;
+Printf("Cutblock Baseplate volume is (%g)", NewVolume);
+Return
+//
+Function CreatePushRod90
+// Pushrod at 90 degrees
+aoffset = Pi/2.0;
+roffset = pushrod_roffset;
+xbcy = x_base + roffset*Cos(aoffset);
+ybcy = y_base + roffset*Sin(aoffset);
+zbcy = z_base;
+hrod = pushrod_height;
+rbase_rod = pushrod_base_radius;
+Rhead_rod = pushrod_outer_radius;
+Call PushRodX;
+Return
+//
+Function CreatePushRod180
+// Pushrod at 180 degrees
+aoffset = Pi;
+roffset = pushrod_roffset;
+xbcy = x_base + roffset*Cos(aoffset);
+ybcy = y_base + roffset*Sin(aoffset);
+zbcy = z_base;
+hrod = pushrod_height;
+rbase_rod = pushrod_base_radius;
+Rhead_rod = pushrod_outer_radius;
+Call PushRodY;
+Return
+//
+Function CreatePushRod270
+// Pushrod at 270 degrees
+aoffset = 3.0*Pi/2.0;
+roffset = pushrod_roffset;
+xbcy = x_base + roffset*Cos(aoffset);
+ybcy = y_base + roffset*Sin(aoffset);
+zbcy = z_base;
+hrod = pushrod_height;
+rbase_rod = pushrod_base_radius;
+Rhead_rod = pushrod_outer_radius;
+Call PushRodX;
+Return
+//

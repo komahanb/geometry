@@ -8,79 +8,19 @@ Include "Parameters.geo";
 Include "Functions.geo";
 Include "CreateComponents.geo";
 
-// Pushrod at 90 degrees
-aoffset = Pi/2.0;
-roffset = 0.85*base_radius;
-xbcy = x_base + roffset*Cos(aoffset);
-ybcy = y_base + roffset*Sin(aoffset);
-zbcy = z_base;
-hrod = pushrod_height;
-rbase_rod = pushrod_base_radius;
-Rhead_rod = pushrod_head_radius;
-Call PushRodX;
+//--------------------------------------------------------------------//
+//------------------      PUSHRODS   ---------------------------------//
+//--------------------------------------------------------------------//
 
-// Pushrod at 180 degrees
-aoffset = Pi;
-roffset = 0.85*base_radius;
-xbcy = x_base + roffset*Cos(aoffset);
-ybcy = y_base + roffset*Sin(aoffset);
-zbcy = z_base;
-hrod = pushrod_height;
-rbase_rod = pushrod_base_radius;
-Rhead_rod = pushrod_head_radius;
-Call PushRodY;
+Call CreatePushRod90;
+Call CreatePushRod180;
+Call CreatePushRod270;
 
-// Pushrod at 270 degrees
-aoffset = 3.0*Pi/2.0;
-roffset = 0.85*base_radius;
-xbcy = x_base + roffset*Cos(aoffset);
-ybcy = y_base + roffset*Sin(aoffset);
-zbcy = z_base;
-hrod = pushrod_height;
-rbase_rod = pushrod_base_radius;
-Rhead_rod = pushrod_head_radius;
-Call PushRodX;
+//-------------------------------------------------------------------//
+//------------------------ BASEPLATE --------------------------------//
+//-------------------------------------------------------------------//
 
-// Create the hollow cylinder for main base plate
-xcy = x_base;
-ycy = y_base;
-zcy = z_base;
-hcy = base_height;
-rcy = inner_base_radius;
-Rcy = base_radius;
-angle = 2*Pi;
-Call HollowCylinderZ;
-Printf("Baseplate volume is (%g)", NewVolume);
-
-// Add push rod hole at 90 degrees
-aoffset = Pi/2.0;
-roffset = 0.85*base_radius;
-baseplate_vnum = NewVolume;
-Call AddPushRodHole;
-Printf("Baseplate volume is (%g)", NewVolume);
-
-// Add push rod hole at 180 degrees
-aoffset = Pi;
-roffset = 0.85*base_radius;
-baseplate_vnum = NewVolume;
-Call AddPushRodHole;
-Printf("Baseplate volume is (%g)", NewVolume);
-
-// Add push rod hole at 270 degrees
-aoffset = 3.0*Pi/2.0;
-roffset = 0.85*base_radius;
-baseplate_vnum = NewVolume;
-Call AddPushRodHole;
-Printf("Baseplate volume is (%g)", NewVolume);
-
-// Create a block volume to be cut from the base plate
-aoffset = 0.0;
-roffset = 0.9*base_radius;
-baseplate_vnum = NewVolume;
-link_length = Rpcy;
-link_radius = base_height/8.0;
-Call CutBlock;
-Printf("Baseplate volume is (%g)", NewVolume);
+Call CreateBasePlate;
 
 //-------------------------------------------------------------------//
 //                         HUB
