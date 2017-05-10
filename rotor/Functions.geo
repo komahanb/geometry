@@ -208,7 +208,7 @@ rcy = link_radius;
 
 // Add a link along y dir
 vlink = newv;
-Cylinder(vlink) = {xlink, ylink, zlink, 0, hcy, 0, rcy, angle};
+Cylinder(vlink) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
 
 // Subtract the inner cylinder from the new volume made above
 v = newv;

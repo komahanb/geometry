@@ -65,7 +65,7 @@ pushrod_outer_radius   = 2.0*pushrod_inner_radius; //arbitrary choice
 pushrod_base_radius    = pushrod_inner_radius;
 pushrod_sphere_radius  = 1.5*pushrod_inner_radius;
 pushrod_height         = z_lower_swash + lower_swash_height/2.0;
-pushrod_roffset        = 0.90*base_radius;
+pushrod_roffset        = 0.91*base_radius; // tight dependency based on where the connector links are located
 
 link_length = 6.0*pushrod_inner_radius;
 link_radius = pushrod_inner_radius;

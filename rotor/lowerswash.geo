@@ -15,7 +15,7 @@ roffset = lower_swash_radius - small ;
 aoffset = 0;
 
 dxtmp = base_radius-lower_swash_radius+small/2;
-dytmp = link_length;
+dytmp = 0.5*lower_swash_radius;
 dztmp = lower_swash_height;
 
 xtmp = x_lower_swash + lower_swash_radius -small/2;
@@ -29,13 +29,21 @@ Block(vblock) = {xtmp, ytmp, ztmp, dxtmp, dytmp, dztmp};
 // Cut a smaller block out of this
 //-------------------------------------------------------------------//
 
-dxtmp = -base_radius/10.0;
-dytmp = link_length;
+dxtmp = -link_length;
+dytmp = -link_length;
 dztmp = lower_swash_height;
 
-xtmp = base_radius;
-ytmp = y_lower_swash - dytmp/2.0;
+xtmp = base_radius*Cos(aoffset);
+ytmp = base_radius*Sin(aoffset) + link_length/2.0;
 ztmp = z_lower_swash;
+
+//dxtmp = -base_radius/10.0;
+//dytmp = link_length;
+//dztmp = lower_swash_height;
+//
+//xtmp = base_radius;
+//ytmp = y_lower_swash - dytmp/2.0;
+//ztmp = z_lower_swash;
 
 vsmallblock = newv;
 Block(vsmallblock) = {xtmp, ytmp, ztmp, dxtmp, dytmp, dztmp};
@@ -47,20 +55,30 @@ BooleanDifference(vblocks) = { Volume{vblock}; Delete; }{ Volume{vsmallblock}; D
 // Cylindrical link
 //------------------------------------------------------------------//
 
-aoffset = 0.0;
-roffset = 0.9*base_radius;
 
-xlink = roffset + link_radius*2.0;
-ylink = y_lower_swash - link_length/2.0;
+
+// Create the hollow cylinder for main base plate
+xlink = base_radius*Cos(aoffset) - link_length/2.0;
+ylink = base_radius*Sin(aoffset) - link_length/2.0;
 zlink = z_lower_swash + lower_swash_height/2.0;
 
-hcy = base_height;
-rcy = inner_base_radius;
-Rcy = base_radius;
+hcy = link_length;
+rcy = link_radius;
+
+//aoffset = 0.0;
+//roffset = 0.9*base_radius;
+//
+//xlink = roffset + link_radius*2.0;
+//ylink = y_lower_swash - link_length/2.0;
+//zlink = z_lower_swash + lower_swash_height/2.0;
+//
+//hcy = base_height;
+//rcy = inner_base_radius;
+//Rcy = base_radius;
 
 // Add a link along y dir
 vlink = newv;
-Cylinder(vlink) = {xlink, ylink, zlink, 0, link_length, 0, link_radius, 2*Pi};
+Cylinder(vlink) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
 
 vconn1 = newv;
 BooleanUnion(vconn1) = { Volume{vblocks}; Delete;}{ Volume{vlink}; Delete;};
@@ -111,6 +129,3 @@ BooleanUnion(vtmp3) = { Volume{vtmp2}; Delete;}{ Volume{vconn3}; Delete;};
 
 vlowerswash = newv;
 BooleanUnion(vlowerswash) = { Volume{vtmp3}; Delete;}{ Volume{vconn4}; Delete;};
-
-
-
