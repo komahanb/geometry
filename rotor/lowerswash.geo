@@ -102,3 +102,18 @@ Sphere(vspheretmp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 
 vlowerswash = newv;
 BooleanDifference(vlowerswash) = { Volume{vcyl}; Delete; }{ Volume{vspheretmp}; Delete; };
 Printf("Created lower swash volume (%g)", vlowerswash);
+
+vtmp1 = newv;
+BooleanUnion(vtmp1) = { Volume{vlowerswash}; Delete;}{ Volume{vconn1}; Delete;};
+
+vtmp2 = newv;
+BooleanUnion(vtmp2) = { Volume{vtmp1}; Delete;}{ Volume{vconn2}; Delete;};
+
+vtmp3 = newv;
+BooleanUnion(vtmp3) = { Volume{vtmp2}; Delete;}{ Volume{vconn3}; Delete;};
+
+vlowerswash = newv;
+BooleanUnion(vlowerswash) = { Volume{vtmp3}; Delete;}{ Volume{vconn4}; Delete;};
+
+
+
