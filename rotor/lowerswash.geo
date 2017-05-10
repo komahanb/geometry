@@ -55,9 +55,6 @@ BooleanDifference(vblocks) = { Volume{vblock}; Delete; }{ Volume{vsmallblock}; D
 // Cylindrical link
 //------------------------------------------------------------------//
 
-
-
-// Create the hollow cylinder for main base plate
 xlink = base_radius*Cos(aoffset) - link_length/2.0;
 ylink = base_radius*Sin(aoffset) - link_length/2.0;
 zlink = z_lower_swash + lower_swash_height/2.0;
@@ -65,20 +62,15 @@ zlink = z_lower_swash + lower_swash_height/2.0;
 hcy = link_length;
 rcy = link_radius;
 
-//aoffset = 0.0;
-//roffset = 0.9*base_radius;
-//
-//xlink = roffset + link_radius*2.0;
-//ylink = y_lower_swash - link_length/2.0;
-//zlink = z_lower_swash + lower_swash_height/2.0;
-//
-//hcy = base_height;
-//rcy = inner_base_radius;
-//Rcy = base_radius;
-
 // Add a link along y dir
-vlink = newv;
-Cylinder(vlink) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
+vlinktmp = newv;
+Cylinder(vlinktmp) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
+
+// create a new sphere to add to the link
+vspheretmp = newv;
+Sphere(vspheretmp) = {xlink, ylink + link_length/2.0 , zlink, pushrod_sphere_radius, -Pi/2, Pi/2, 2*Pi};
+vlink  = newv;
+BooleanUnion(vlink) = { Volume{vlinktmp}; Delete;}{ Volume{vspheretmp}; Delete;};
 
 vconn1 = newv;
 BooleanUnion(vconn1) = { Volume{vblocks}; Delete;}{ Volume{vlink}; Delete;};
