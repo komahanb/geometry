@@ -5,44 +5,51 @@ Include "Parameters.geo";
 Include "Functions.geo";
 Include "CreateComponents.geo";
 
+xloc = 0.0;
+yloc = 0.0;
+zloc = 0.0;
 
-// Create a cylinder with length horn_length and positioned on top of
-// the cylindrical cap made on the baseplate punched link
+// Pushrod at 180 degrees
+//-------------------------------------------------------------------//
+// Create a body cylinder
+//-------------------------------------------------------------------//
 
-// These are inputs
-xpos = 0.0;
-ypos = 0.0;
-zpos = 0.0;
-radius = horn_radius;
-height = horn_length;
+xbcy      = xloc;
+ybcy      = yloc;
+zbcy      = zloc;
 
-// Create a cylinder
+hrod      = horn_length;
+rrod      = horn_radius;
+
 vbody = newv;
-Cylinder(vbody) = {xpos, ypos, zpos, 0, height, 0, radius, 2*Pi};
+Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
+Printf("Created body pushrod cylinder = %g", vbody);
 
-// Add a full cylinder at the bottom
-xpos = xpos - horn_radius;
-radius = horn_outer_tail_radius;
-height = 2*horn_radius;
-vtail = newv;
-Cylinder(vtail) = {xpos, ypos, zpos, height, 0, 0, radius, 2*Pi};
+//-------------------------------------------------------------------//
+// Create a head cylinder
+//-------------------------------------------------------------------//
 
-// Unite the body with main cylinder
+hcy   = 2*horn_radius;
+rcy   = horn_outer_head_radius;
+
+xcy   = xloc;
+ycy   = yloc - horn_radius;
+zcy   = zloc + horn_length;
+
+vhead = newv;
+Cylinder(vhead) = {xcy, ycy, zcy, 0, hcy, 0, rcy, 2*Pi};
+Printf("Created head pushrod cylinder = %g", vhead);
+
+// Unite the body and head to make the pushrod
+vtot = newv;
+BooleanUnion(vtot) = { Volume{vhead}; Delete; }{ Volume{vbody}; Delete; };
+NewVolume = vtot;
+
+// Punch a cylindrical hole on the head
+hcy   = 2*horn_radius;
+rcy   = horn_inner_head_radius;
+vcyltmp = newv;
+Cylinder(vcyltmp) = {xcy, ycy, zcy, 0, hcy, 0, rcy, 2*Pi};
+Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 v = newv;
-BooleanUnion(v) = { Volume{vbody}; Delete;}{ Volume{vtail}; Delete;};
-
-// Cut out a smaller cylinder at the bottom
-radius = horn_inner_tail_radius;
-height = 2*horn_radius;
-vtailcut = newv;
-Cylinder(vtailcut) = {xpos, ypos, zpos, height, 0, 0, radius, 2*Pi};
-vhorn = newv;
-BooleanDifference(vhorn) = { Volume{v}; Delete; }{ Volume{vtailcut}; Delete; };
-
-// Add a one-third cylinder on top
-
-// Cut out a bolt hole of radius
-
-
-
-
+BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
