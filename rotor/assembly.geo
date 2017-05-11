@@ -69,22 +69,5 @@ Call CreateLowerSwashPlate;
 //                    UPPER SWASH PLATE
 //-------------------------------------------------------------------//
 
-// create a cylinder
 
-X_cylinder = xo + x_upper_swash;
-Y_cylinder = yo + y_upper_swash;
-Z_cylinder = zo + z_upper_swash;
-
-vcyl = newv;
-Cylinder(vcyl) = {X_cylinder, Y_cylinder, Z_cylinder, 0, 0, upper_swash_height, upper_swash_radius, 2*Pi};
-
-// create a new sphere to cut
-X_sphere = xo + x_sphere;
-Y_sphere = yo + y_sphere;
-Z_sphere = zo + z_sphere;
-vspheretmp = newv;
-Sphere(vspheretmp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
-
-vupperswash = newv;
-BooleanDifference(vupperswash) = { Volume{vcyl}; Delete; }{ Volume{vspheretmp}; Delete;};
-Printf("Created upper swash volume (%g)", vupperswash);
+Call CreateUpperSwashPlate;
