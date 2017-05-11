@@ -83,10 +83,15 @@ Duplicata { Volume{vnew}; }
 };
 vconn2 = out[0];
 
-//out[] = Rotate {{0, 0, 1}, {0, 0, 0}, 2.0*Pi/3.0} {
+//out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/6.0} {
 //Duplicata { Volume{vconn2}; }
 //};
 //vconn3 = out[0];
+//
+//out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi} {
+//Duplicata { Volume{vconn3}; }
+//};
+//vconn4 = out[0];
 
 // Unite all volumes into one
 vplate = newv;
@@ -492,16 +497,29 @@ s = news ;
 Plane Surface(s) = {ll};
 
 out[] = Rotate {{0, 0, 1}, {0, 0, 0}, -Pi/2.0} {
-Duplicata { Surface{s}; }
+Surface{s};
 };
 srotated = out[0];
 
-Extrude {R, 0, 0} {
-  Surface{srotated};
-  Layers{(R-r_cutout)/cl};
-//Recombine;
-}
-Coherence;
+// Delete the points making the surface
+
+
+// Extrude the surface to create a volume
+out[] = Extrude {R, 0, 0} { Surface{srotated}; Layers{(R-r_cutout)/cl }; };
+vblade = out[1];
+Printf("volume of the blade %g", vblade);
+
+//surfaces contains in the following order:
+//[0] - front surface (opposed to source surface)
+//[1] - extruded volume
+
+//[2] - bottom surface (belonging to 1st line in "Line Loop (6)")
+//[3] - right surface (belonging to 2nd line in "Line Loop (6)")
+//[4] - top surface (belonging to 3rd line in "Line Loop (6)")
+//[5] - left surface (belonging to 4th line in "Line Loop (6)") 
+// Looking from TOP at XY plane according to gmsh convention
+//Physical Surface("bottom_hub_surface", 3) = out[0];
+//Physical Surface("lateral_surface", 4) = {out[2], out[3], out[4], out[5]};
 
 // Delete the duplicate surface and points
 // Create a volume number for the blade
@@ -521,8 +539,8 @@ dz = 0;
 vbladeconn = newv;
 Cylinder(vbladeconn) = {xbconn, ybconn, zbconn, dx, dy, dz, blade_conn_radius, 2*Pi};
 
-//vtot = newv;
-//BooleanUnion(vtot) = { Volume{vbladeconn}; Delete; }{ Volume{vblade}; Delete; }
+vtot = newv;
+BooleanUnion(vtot) = { Volume{vbladeconn}; Delete; }{ Volume{vblade}; Delete; };
 
 Return
 //
