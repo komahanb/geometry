@@ -212,7 +212,9 @@ Cylinder(vlinktmp) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
 
 // Add a cylindrical cap along y dir
 vlinkcap = newv;
-Cylinder(vlinkcap) = {xlink, ylink + link_length/2.0-pushrod_sphere_radius/2.0, zlink, 0,  pushrod_sphere_radius, 0, pushrod_sphere_radius, 2*Pi};
+Cylinder(vlinkcap) = {
+xlink, ylink + link_length/2.0-pushrod_sphere_radius, zlink, 
+0,  2.0*pushrod_sphere_radius, 0, pushrod_sphere_radius, 2*Pi};
 
 // Add the cap to link
 vlink = newv;
