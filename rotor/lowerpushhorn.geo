@@ -18,7 +18,7 @@ ybcy = yloc;
 zbcy = zloc;
 
 hrod = horn_length;
-rrod = horn_radius;
+rrod = 0.99*horn_base_radius;
 
 vbody = newv;
 Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
@@ -28,11 +28,11 @@ Printf("Created body pushrod cylinder = %g", vbody);
 // Create a tail cylinder
 //-------------------------------------------------------------------//
 
-hcy = 2*horn_radius;
-rcy = horn_outer_head_radius;
+hcy = 2*horn_base_radius;
+rcy = horn_outer_radius;
 
 xcy = xloc;
-ycy = yloc - horn_radius;
+ycy = yloc - horn_base_radius;
 zcy = zloc;
 
 vtail = newv;
@@ -45,8 +45,8 @@ BooleanUnion(vtot) = { Volume{vtail}; Delete; }{ Volume{vbody}; Delete; };
 NewVolume = vtot;
 
 // Punch a cylindrical hole on the tail
-hcy   = 2*horn_radius;
-rcy   = horn_inner_tail_radius;
+hcy   = 2*horn_base_radius;
+rcy   = horn_inner_radius;
 vcyltmp = newv;
 Cylinder(vcyltmp) = {xcy, ycy, zcy, 0, hcy, 0, rcy, 2*Pi};
 Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
@@ -57,15 +57,15 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
 // Create a head cylinder
 //-------------------------------------------------------------------//
 
-hcy   = 2*horn_radius;
-rcy   = horn_outer_head_radius;
+hcy   = 2*horn_base_radius;
+rcy   = horn_outer_radius;
 
 xcy   = xloc;
-ycy   = yloc - horn_radius;
+ycy   = yloc - horn_base_radius;
 zcy   = zloc + horn_length;
 
 xcy   = xloc;
-ycy   = yloc - horn_radius;
+ycy   = yloc - horn_base_radius;
 zcy   = zloc + horn_length;
 
 vhead = newv;
@@ -78,7 +78,7 @@ BooleanUnion(vtot) = { Volume{vhead}; Delete; }{ Volume{v}; Delete; };
 NewVolume = vtot;
 
 xcy   = xloc;
-ycy   = yloc - horn_radius;
+ycy   = yloc - horn_base_radius;
 zcy   = zloc + horn_length;
 
 vhead1 = newv;
@@ -89,7 +89,7 @@ vtmp = newv;
 BooleanDifference(vtmp) = { Volume{vtot}; Delete; }{ Volume{vhead1}; Delete; };
 
 xcy   = xloc;
-ycy   = yloc + horn_radius;
+ycy   = yloc + horn_base_radius;
 zcy   = zloc + horn_length;
 
 vhead2 = newv;
@@ -102,11 +102,11 @@ BooleanDifference(vtot) = { Volume{vtmp}; Delete; }{ Volume{vhead2}; Delete; };
 // Punch a cylindrical hole on the head
 
 xcy   = xloc;
-ycy   = yloc + horn_radius;
+ycy   = yloc + horn_base_radius;
 zcy   = zloc + horn_length;
 
-hcy   = 2*horn_radius;
-rcy   = horn_inner_head_radius;
+hcy   = 2*horn_base_radius;
+rcy   = horn_bolt_radius;
 
 vcyltmp = newv;
 Cylinder(vcyltmp) = {xcy, ycy, zcy, 0, -hcy, 0, rcy, 2*Pi};

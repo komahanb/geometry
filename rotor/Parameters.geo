@@ -69,13 +69,8 @@ swash_connplate_length = 1.5*link_length;
 blade_conn_length       = DefineNumber[ link_length, Name "Parameters/conn_length" ];
 blade_conn_radius       = DefineNumber[ 0.65*(0.5*hub_height), Name "Parameters/conn_radius" ];
 
-
-horn_length = pushrod_height/2.0;
-horn_radius = pushrod_base_radius;
-
-horn_outer_tail_radius = pushrod_outer_radius;
-horn_inner_tail_radius = pushrod_inner_radius;
-horn_outer_head_radius = pushrod_outer_radius;
-horn_inner_head_radius = pushrod_inner_radius;
-
-// bolt_radius = link_radius/2.0; // 
+horn_length       = pushrod_height/2.0;
+horn_bolt_radius  = link_radius/2.0;
+horn_base_radius  = pushrod_base_radius;
+horn_outer_radius = pushrod_outer_radius;
+horn_inner_radius = pushrod_sphere_radius;
