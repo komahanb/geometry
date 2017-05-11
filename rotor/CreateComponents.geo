@@ -78,17 +78,17 @@ BooleanDifference(vpiece) = { Volume{v}; Delete;}{ Volume{vcyl};};
 vnew = newv;
 BooleanUnion(vnew) = { Volume{vcyl}; Delete;}{ Volume{vpiece}; Delete;};
 
-out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi} {
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 Duplicata { Volume{vnew}; }
 };
 vconn2 = out[0];
 
-//out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/6.0} {
+//out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/6.0} {
 //Duplicata { Volume{vconn2}; }
 //};
 //vconn3 = out[0];
 //
-//out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi} {
+//out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 //Duplicata { Volume{vconn3}; }
 //};
 //vconn4 = out[0];
@@ -189,17 +189,17 @@ BooleanUnion(vnew) = { Volume{vcyl}; Delete;}{ Volume{vpiece}; Delete;};
 
 // vnew = Fillet{vnew}{23, 24, 28, 14}{fillet_radius};
 
-out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2} {
 Duplicata { Volume{vnew}; }
 };
 vconn2 = out[0];
 
-out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2} {
 Duplicata { Volume{vconn2}; }
 };
 vconn3 = out[0];
 
-out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2} {
 Duplicata { Volume{vconn3}; }
 };
 vconn4 = out[0];
@@ -451,7 +451,7 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 //BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
 Return
 //
-Function CreateBlade
+Function CreateBladeX
 // Airfoil
 cl       = 0.01; // characteristic length of the mesh //0.01
 chord    = 0.121; // chord of the airfoil
@@ -496,7 +496,7 @@ Line Loop(ll) = NACA4_Splines[] ;
 s = news ;
 Plane Surface(s) = {ll};
 
-out[] = Rotate {{0, 0, 1}, {0, 0, 0}, -Pi/2.0} {
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
 Surface{s};
 };
 srotated = out[0];
@@ -539,8 +539,8 @@ dz = 0;
 vbladeconn = newv;
 Cylinder(vbladeconn) = {xbconn, ybconn, zbconn, dx, dy, dz, blade_conn_radius, 2*Pi};
 
-vtot = newv;
-BooleanUnion(vtot) = { Volume{vbladeconn}; Delete; }{ Volume{vblade}; Delete; };
+vbladex = newv;
+BooleanUnion(vbladex) = { Volume{vbladeconn}; Delete; }{ Volume{vblade}; Delete; };
 
 Return
 //
@@ -591,5 +591,22 @@ Cylinder(vhubconn2) = {xhconn, yhconn, zhconn, dx, dy, dz, blade_conn_radius, 2*
 
 vfinal2 = newv;
 BooleanUnion(vfinal2) = { Volume{vfinal}; Delete; }{ Volume{vhubconn2}; Delete; };
+Return
+//
+Function RotateBlade
+// rotation_angle
+// blade_vnum
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, rotation_angle} {
+Duplicata{ Volume{blade_vnum}; }
+};
+vrotated = out[0];
+Printf("New blade volume is %g", vrotated);
+Return
+//
+Function CreateBladeNegativeX
+// Rotate the blade by Pi
+rotation_angle = Pi;
+blade_vnum = vbladex;
+Call RotateBlade;
 Return
 //

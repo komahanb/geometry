@@ -66,4 +66,8 @@ Call CreateUpperSwashPlate;
 //                    ROTOR BLADE
 //-------------------------------------------------------------------//
 
-Call CreateBlade;
+// Create a blade at zero
+Call CreateBladeX;
+
+// Create a blade at 180
+Call CreateBladeNegativeX;
