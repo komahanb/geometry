@@ -497,8 +497,6 @@ Duplicata { Surface{s}; }
 };
 srotated = out[0];
 
-Delete{s};
-
 Extrude {R, 0, 0} {
   Surface{srotated};
   Layers{(R-r_cutout)/cl};
