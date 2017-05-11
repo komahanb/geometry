@@ -33,8 +33,8 @@ z_sphere      = DefineNumber[ z_base + 0.4*shaft_height , Name "Parameters/z_sph
 z_lower_swash = DefineNumber[ z_sphere - lower_swash_height , Name "Parameters/z_lower_swash" ];
 z_upper_swash = DefineNumber[ z_lower_swash + lower_swash_height, Name "Parameters/z_upper_swash" ];
 
-z_hub         = DefineNumber[ z_base + (1.0-hub_height)*shaft_height , Name "Parameters/z_hub" ];
-z_blade       = DefineNumber[ z_base + z_hub+hub_height/2.0          , Name "Parameters/z_blade" ];
+z_hub         = DefineNumber[ z_base , Name "Parameters/z_hub" ];
+z_blade       = DefineNumber[ z_base + shaft_height - hub_height/2.0          , Name "Parameters/z_blade" ];
 
 y_lower_swash = DefineNumber[ y_base, Name "Parameters/y_lower_swash" ];
 y_upper_swash = DefineNumber[ y_base, Name "Parameters/y_upper_swash" ];
@@ -47,11 +47,6 @@ x_upper_swash = DefineNumber[ x_base, Name "Parameters/x_upper_swash" ];
 x_sphere      = DefineNumber[ x_base, Name "Parameters/x_sphere" ];
 x_hub         = DefineNumber[ x_base, Name "Parameters/x_hub" ];
 x_blade       = DefineNumber[ x_base, Name "Parameters/x_blade" ];
-
-conn_length       = DefineNumber[ hub_radius+(cutout_radius-hub_radius)/3.0, Name "Parameters/conn_length" ];
-conn_radius       = DefineNumber[ 0.65*(0.5*hub_height), Name "Parameters/conn_radius" ];
-conn1_angular_pos = DefineNumber[ Pi/2, Name "Parameters/conn1_angular_pos" ];
-small             = DefineNumber[ 0.1*cutout_radius, Name "Parameters/small" ];
 
 inner_base_radius = DefineNumber[ shaft_radius, Name "Parameters/inner_base_radius" ];
 
@@ -67,3 +62,9 @@ pushrod_roffset        = 0.91*base_radius; // tight dependency based on where th
 
 link_length = 6.0*pushrod_inner_radius;
 link_radius = pushrod_inner_radius;
+
+uswash_outer_radius = base_radius - link_length;
+swash_connplate_length = 1.5*link_length;
+
+blade_conn_length       = DefineNumber[ link_length, Name "Parameters/conn_length" ];
+blade_conn_radius       = DefineNumber[ 0.65*(0.5*hub_height), Name "Parameters/conn_radius" ];

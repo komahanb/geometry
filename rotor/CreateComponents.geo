@@ -1,13 +1,12 @@
 Function CreateUpperSwashPlate
 aoffset = 0;
-uswash_outer_radius = base_radius - link_length;
 
 //-------------------------------------------------------------------//
 // Add a block to the swash plate
 //-------------------------------------------------------------------//
 
 dxtmp = uswash_outer_radius;
-dytmp = 1.5*link_length;
+dytmp = swash_connplate_length;
 dztmp = upper_swash_height;
 
 xtmp = x_upper_swash;
@@ -114,7 +113,7 @@ aoffset = 0;
 //-------------------------------------------------------------------//
 
 dxtmp = base_radius;
-dytmp = 1.5*link_length;
+dytmp = swash_connplate_length;
 dztmp = lower_swash_height;
 
 xtmp = x_lower_swash;
@@ -500,8 +499,79 @@ srotated = out[0];
 Extrude {R, 0, 0} {
   Surface{srotated};
   Layers{(R-r_cutout)/cl};
+//Recombine;
 }
 Coherence;
+
 // Delete the duplicate surface and points
+// Create a volume number for the blade
+ 
+//--------------------------------------------------------------------//
+// Create a blade connector body
+//--------------------------------------------------------------------//
+
+xbconn = x_blade + cutout_radius;
+ybconn = y_blade;
+zbconn = z_blade;
+
+dx = -blade_conn_length*Cos(0);
+dy = -blade_conn_length*Sin(0);
+dz = 0;
+
+vbladeconn = newv;
+Cylinder(vbladeconn) = {xbconn, ybconn, zbconn, dx, dy, dz, blade_conn_radius, 2*Pi};
+
+//vtot = newv;
+//BooleanUnion(vtot) = { Volume{vbladeconn}; Delete; }{ Volume{vblade}; Delete; }
+
+Return
+//
+Function CreateDoubleBladeHub
+// Shaft cylinder
+vshaft = newv;
+Cylinder(vshaft) = {x_hub, y_hub, z_hub, 0, 0, shaft_height-hub_height, shaft_radius, 2*Pi};
+Printf("Created shaft volume (%g)", vshaft);
+
+// Hub cylinder
+vhub = newv;
+Cylinder(vhub) = {x_hub, y_hub, z_hub+shaft_height-hub_height, 0, 0, hub_height, hub_radius, 2*Pi};
+Printf("Created hub volume (%g)", vhub);
+
+// 
+vtot = newv;
+BooleanUnion(vtot) = { Volume{vshaft}; Delete; }{ Volume{vhub}; Delete; };
+Printf("Combined shaft and hub volume (%g)", vtot);
+
+//--------------------------------------------------------------------//
+// Create a hub connector body on right
+//--------------------------------------------------------------------//
+
+xhconn = x_hub;
+yhconn = y_hub;
+zhconn = z_hub + shaft_height - hub_height/2.0 ;
+dx = upper_swash_radius;
+dy = 0;
+dz = 0;
+vhubconn = newv;
+Cylinder(vhubconn) = {xhconn, yhconn, zhconn, dx, dy, dz, blade_conn_radius, 2*Pi};
+
+vfinal = newv;
+BooleanUnion(vfinal) = { Volume{vtot}; Delete; }{ Volume{vhubconn}; Delete; };
+
+//--------------------------------------------------------------------//
+// Create a hub connector body on the left
+//--------------------------------------------------------------------//
+
+xhconn = x_hub;
+yhconn = y_hub;
+zhconn = z_hub + shaft_height - hub_height/2.0 ;
+dx = -upper_swash_radius;
+dy = 0;
+dz = 0;
+vhubconn2 = newv;
+Cylinder(vhubconn2) = {xhconn, yhconn, zhconn, dx, dy, dz, blade_conn_radius, 2*Pi};
+
+vfinal2 = newv;
+BooleanUnion(vfinal2) = { Volume{vfinal}; Delete; }{ Volume{vhubconn2}; Delete; };
 Return
 //

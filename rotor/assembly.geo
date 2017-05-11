@@ -27,18 +27,7 @@ Call CreateBasePlate;
 //                         HUB
 //-------------------------------------------------------------------//
 
-// Shaft cylinder
-vshafttmp = newv;
-Cylinder(vshafttmp) = {xo, yo, zo, 0, 0, shaft_height, shaft_radius, 2*Pi};
-
-// Hub cylinder
-vhubtmp = newv;
-Cylinder(vhubtmp) = {xo, yo, zo+z_hub, 0, 0, hub_height, hub_radius, 2*Pi};
-
-vhub = newv;
-BooleanUnion(vhub) = { Volume{vshafttmp}; Delete; }{ Volume{vhubtmp}; Delete; };
-Printf("Created hub volume (%g)", vhub);
-
+Call CreateDoubleBladeHub;
 
 //-------------------------------------------------------------------//
 //                         SPHERE
