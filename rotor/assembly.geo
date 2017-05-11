@@ -6,6 +6,7 @@ SetFactory("OpenCASCADE");
 
 Include "Parameters.geo";
 Include "Functions.geo";
+Include "naca.geo";
 Include "CreateComponents.geo";
 
 //--------------------------------------------------------------------//
@@ -71,3 +72,9 @@ Call CreateLowerSwashPlate;
 
 
 Call CreateUpperSwashPlate;
+
+//-------------------------------------------------------------------//
+//                    ROTOR BLADE
+//-------------------------------------------------------------------//
+
+Call CreateBlade;
