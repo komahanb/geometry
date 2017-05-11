@@ -491,11 +491,19 @@ Line Loop(ll) = NACA4_Splines[] ;
 
 s = news ;
 Plane Surface(s) = {ll};
-Extrude {0, R, 0} {
-  Surface{s};
+
+out[] = Rotate {{0, 0, 1}, {0, 0, 0}, -Pi/2.0} {
+Duplicata { Surface{s}; }
+};
+srotated = out[0];
+
+Delete{s};
+
+Extrude {R, 0, 0} {
+  Surface{srotated};
   Layers{(R-r_cutout)/cl};
 }
 Coherence;
-//
+// Delete the duplicate surface and points
 Return
 //
