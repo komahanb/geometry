@@ -71,7 +71,7 @@ blade_conn_radius       = DefineNumber[ 0.65*(0.5*hub_height), Name "Parameters/
 
  //pushrod_height/2.0;
 pushrod_angle = Pi/4;
-horn_length = 0.5*(z_lower_swash + 0.5*lower_swash_height - 0.5*base_height);
+horn_length = 0.5*(z_lower_swash + 0.5*lower_swash_height - 0.5*base_height)/Cos(pushrod_angle);
 horn_bolt_radius  = link_radius/2.0;
 horn_base_radius  = pushrod_base_radius;
 horn_outer_radius = pushrod_outer_radius;

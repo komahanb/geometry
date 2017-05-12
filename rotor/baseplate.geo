@@ -29,7 +29,7 @@ vlph = NewVolume;
 aoffset = 0;
 xloc = xloc;
 yloc = yloc;
-zloc = zloc + horn_length;
+zloc = z_lower_swash+ lower_swash_height/2.0;
 
 Call CreateUpperPushHorn;
 vuph = NewVolume;

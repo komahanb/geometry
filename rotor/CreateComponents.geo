@@ -729,7 +729,7 @@ hrod = horn_length;
 rrod = 0.99*horn_base_radius;
 
 vbody = newv;
-Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
+Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, -hrod, rrod, 2*Pi};
 Printf("Created body pushrod cylinder = %g", vbody);
 
 //-------------------------------------------------------------------//
@@ -741,7 +741,7 @@ rcy   = horn_outer_radius;
 
 xcy   = xloc;
 ycy   = yloc - horn_base_radius;
-zcy   = zloc + horn_length;
+zcy   = zloc ;
 
 vhead = newv;
 Cylinder(vhead) = {xcy, ycy, zcy, 0, hcy, 0, rcy, 2*Pi};
@@ -755,7 +755,7 @@ NewVolume = vtot;
 // Punch a spherical hole on the head
 xcy   = xloc;
 ycy   = yloc;
-zcy   = zloc + horn_length;
+zcy   = zloc;
 
 vspheretmp = newv;
 Sphere(vspheretmp) = {xcy, ycy, zcy, pushrod_sphere_radius, -Pi/2, Pi/2, 2*Pi};
@@ -775,7 +775,7 @@ rcy   = horn_outer_radius;
 
 xcy   = xloc;
 ycy   = yloc - horn_base_radius;
-zcy   = zloc;
+zcy   = zloc - horn_length;
 
 vtail1 = newv;
 Cylinder(vtail1) = {xcy, ycy, zcy, 0, hcy, 0, rcy, 2*Pi};
@@ -790,7 +790,7 @@ NewVolume = vtot;
 
 xcy   = xloc;
 ycy   = yloc - horn_base_radius/2.0;
-zcy   = zloc;
+zcy   = zloc - horn_length;
 
 vtail2 = newv;
 Cylinder(vtail2) = {xcy, ycy, zcy, 0, hcy/2.0, 0, rcy, 2*Pi};
@@ -804,7 +804,7 @@ NewVolume = vtot2;
 // Cut a cylinder of full height but bolt radius
 xcy   = xloc;
 ycy   = yloc - horn_base_radius;
-zcy   = zloc;
+zcy   = zloc - horn_length;
 rcy   = horn_bolt_radius;
 
 vhole = newv;
