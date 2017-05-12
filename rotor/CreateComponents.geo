@@ -712,7 +712,12 @@ Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 vlowerpushhorn = newv;
 BooleanUnion(vlowerpushhorn) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
 //
-NewVolume = vlowerpushhorn;
+out[] = Rotate {{0, 1, 0}, {xloc, yloc, zloc}, pushrod_angle} {
+Volume{vlowerpushhorn};
+};
+vfinal = out[0];
+NewVolume = vfinal;
+
 Return
 //
 Function CreateUpperPushHorn
@@ -814,6 +819,12 @@ Printf("Created tail pushrod cylinder = %g", vhole);
 // Unite the body and head to make the pushrod
 vfinal = newv;
 BooleanDifference(vfinal) = { Volume{vtot2}; Delete; }{ Volume{vhole}; Delete; };
+
+out[] = Rotate {{0, 1, 0}, {xloc, yloc, zloc}, -pushrod_angle} {
+Volume{vfinal};
+};
+vfinal = out[0];
 NewVolume = vfinal;
+//
 Return
 //
