@@ -34,7 +34,6 @@ Block(vsmallblock) = {xtmp, ytmp, ztmp, dxtmp, dytmp, dztmp};
 vtot = newv;
 BooleanDifference(vtot) = { Volume{vblock}; Delete; }{ Volume{vsmallblock}; Delete; };
 
-
 //------------------------------------------------------------------//
 // Cylindrical link
 //------------------------------------------------------------------//
@@ -78,24 +77,24 @@ BooleanDifference(vpiece) = { Volume{v}; Delete;}{ Volume{vcyl};};
 vnew = newv;
 BooleanUnion(vnew) = { Volume{vcyl}; Delete;}{ Volume{vpiece}; Delete;};
 
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
-Duplicata { Volume{vnew}; }
-};
-vconn2 = out[0];
-
-//out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/6.0} {
-//Duplicata { Volume{vconn2}; }
-//};
-//vconn3 = out[0];
-//
 //out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
-//Duplicata { Volume{vconn3}; }
+//Duplicata { Volume{vnew}; }
 //};
-//vconn4 = out[0];
+//vconn2 = out[0];
+
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, upper_swash_angle} {
+Volume{vnew};
+};
+vconn3 = out[0];
+
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Duplicata { Volume{vconn3}; }
+};
+vconn4 = out[0];
 
 // Unite all volumes into one
 vplate = newv;
-BooleanUnion(vplate) = { Volume{vnew}; Delete;}{ Volume{vconn2}; Delete;};
+BooleanUnion(vplate) = { Volume{vnew}; Delete;}{ Volume{vconn4}; Delete;};
 Coherence;
 
 // create a new sphere to cut
@@ -826,5 +825,88 @@ Volume{vfinal};
 vfinal = out[0];
 NewVolume = vfinal;
 //
+Return
+//
+
+
+Function CreateMalePitchLink
+// angle is the input
+
+// Spherical cap point on the upper swash plate
+
+x = uswash_outer_radius*Cos(aoffset) - link_length/2.0;
+y = uswash_outer_radius*Sin(aoffset);
+z = z_upper_swash + upper_swash_height/2.0;
+
+// Infer this point geometrically
+xloc = x*Cos(theta) - y*Sin(theta);
+yloc = x*Sin(theta) + y*Cos(theta);
+zloc = z;
+
+// Create a spherical body of height upto half of the hub
+xbcy = xloc;
+ybcy = yloc;
+zbcy = zloc;
+
+hrod = pitchlink_length;
+rrod = 0.99*horn_base_radius;
+
+vbody = newv;
+Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
+Printf("Created body pitchlink cylinder = %g", vbody);
+
+//-------------------------------------------------------------------//
+// Create a HEAD cylinder with spherical cavity
+//-------------------------------------------------------------------//
+
+hcy   = 2*horn_base_radius;
+rcy   = horn_outer_radius;
+
+xcy   = xloc;
+ycy   = yloc - horn_base_radius;
+zcy   = zloc;
+
+vhead = newv;
+Cylinder(vhead) = {xcy, ycy, zcy, 0, hcy, 0, rcy, 2*Pi};
+Printf("Created head pitchlink cylinder = %g", vhead);
+
+// Unite the body and head to make the pitchlink
+vtot = newv;
+BooleanUnion(vtot) = { Volume{vhead}; Delete; }{ Volume{vbody}; Delete; };
+NewVolume = vtot;
+
+// Punch a spherical hole on the head
+xcy   = xloc;
+ycy   = yloc;
+zcy   = zloc;
+
+vspheretmp = newv;
+Sphere(vspheretmp) = {xcy, ycy, zcy, pitchlink_sphere_radius, -Pi/2, Pi/2, 2*Pi};
+Printf("Punched spherical hole in pitchlink = %g", vspheretmp);
+v = newv;
+BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
+
+// Attach a male part with cylindrical head and punched nut at the other end of the rod
+hcy   = 2*horn_base_radius;
+rcy   = horn_outer_radius;
+
+ycy   = yloc;
+xcy   = xloc - horn_base_radius;
+zcy   = zloc + pitchlink_length;
+
+vmale = newv;
+Cylinder(vmale) = {xcy, ycy, zcy, hcy, 0, 0, rcy, 2*Pi};
+
+// Add a bolt
+hcy   = 2*2*horn_base_radius;
+rcy   = horn_bolt_radius;
+
+ycy   = yloc;
+xcy   = xloc - 2.0*horn_base_radius;
+zcy   = zloc + pitchlink_length;
+
+vbolt = newv;
+Cylinder(vbolt) = {xcy, ycy, zcy, hcy, 0, 0, rcy, 2*Pi};
+
 Return
 //

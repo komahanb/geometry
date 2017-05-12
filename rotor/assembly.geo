@@ -77,7 +77,6 @@ Call CreateLowerSwashPlate;
 //                    UPPER SWASH PLATE
 //-------------------------------------------------------------------//
 
-
 Call CreateUpperSwashPlate;
 
 //-------------------------------------------------------------------//
@@ -89,3 +88,9 @@ Call CreateBladeX;
 
 // Create a blade at 180
 Call CreateBladeNegativeX;
+
+theta = upper_swash_angle;
+Call CreateMalePitchLink;
+
+theta = Pi + upper_swash_angle;
+Call CreateMalePitchLink;

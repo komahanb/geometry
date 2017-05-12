@@ -60,9 +60,13 @@ pushrod_sphere_radius  = 1.75*pushrod_inner_radius;
 pushrod_height         = z_lower_swash + lower_swash_height/2.0;
 pushrod_roffset        = 0.91*base_radius; // tight dependency based on where the connector links are located
 
+pitchlink_sphere_radius  = 1.75*pushrod_inner_radius;
+pitchlink_length = z_blade -  (z_upper_swash + upper_swash_height/2.0);
+
 link_length = 6.0*pushrod_inner_radius;
 link_radius = pushrod_inner_radius;
 
+upper_swash_angle = Pi/10.0;
 uswash_outer_radius = base_radius - link_length;
 swash_connplate_length = 1.5*link_length;
 
@@ -76,3 +80,4 @@ horn_bolt_radius  = link_radius/2.0;
 horn_base_radius  = pushrod_base_radius;
 horn_outer_radius = pushrod_outer_radius;
 horn_inner_radius = pushrod_sphere_radius;
+
