@@ -51,21 +51,7 @@ Call CreateDoubleBladeHub;
 //                         SPHERE
 //-------------------------------------------------------------------//
 
-// Sphere
-X_sphere = xo + x_sphere;
-Y_sphere = yo + y_sphere;
-Z_sphere = zo + z_sphere;
-
-vspheretmp = newv;
-Sphere(vspheretmp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
-
-// Cut the shaft volume from this sphere
-vshafttmp = newv;
-Cylinder(vshafttmp) = {xo, yo, zo, 0, 0, shaft_height, shaft_radius, 2*Pi};
-
-vsphere = newv;
-BooleanDifference(vsphere) = { Volume{vspheretmp}; Delete; }{ Volume{vshafttmp}; Delete; };
-Printf("Created sphere volume (%g)", vsphere);
+Call CreateSphere;
 
 //-------------------------------------------------------------------//
 //                    LOWER SWASH PLATE
@@ -94,11 +80,10 @@ Call CreateBladeNegativeX;
 //-------------------------------------------------------------------//
 
 theta = upper_swash_angle;
-
-Call CreateMalePitchLink;
+Call CreateLowerPitchLink;
 vlowerpitch0 = NewVolume;
 
-Call CreateFemalePitchLink;
+Call CreateUpperPitchLink;
 vupperpitch0 = NewVolume;
 
 // Rotate the links for the other blade

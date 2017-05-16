@@ -1,4 +1,4 @@
-// hub geometry and mesh characteristics
+// Geometry and mesh characteristics
 SetFactory("OpenCASCADE");
 
 Include "Parameters.geo";
@@ -7,15 +7,18 @@ Include "naca.geo";
 Include "CreateComponents.geo";
 
 // Create geometry
-Call CreateDoubleBladeHub;
+aoffset = 0;
+theta = upper_swash_angle;
+Call CreateUpperPitchLink;
+vupperpitch0 = NewVolume;
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 
-Mesh.CharacteristicLengthFactor = 0.25; 
+Mesh.CharacteristicLengthFactor = 0.2; 
 Mesh.CharacteristicLengthMin = 0; 
 Mesh.CharacteristicLengthMax = 1.0; 
-Mesh.CharacteristicLengthFromCurvature = 1; 
-//Mesh.CharacteristicLengthFromPoints = 1; 
+Mesh.CharacteristicLengthFromCurvature = 0; 
+Mesh.CharacteristicLengthFromPoints = 1; 
 Mesh.Optimize = 1; 
 Mesh.SubdivisionAlgorithm = 1; 
 Mesh.RecombinationAlgorithm = 1; 

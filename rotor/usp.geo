@@ -1,4 +1,4 @@
-// hub geometry and mesh characteristics
+// Upper swash plate geometry and mesh characteristics
 SetFactory("OpenCASCADE");
 
 Include "Parameters.geo";
@@ -7,7 +7,7 @@ Include "naca.geo";
 Include "CreateComponents.geo";
 
 // Create geometry
-Call CreateDoubleBladeHub;
+Call CreateUpperSwashPlate;
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 

@@ -1,29 +1,30 @@
-
+// sphere geometry and mesh characteristics
 SetFactory("OpenCASCADE");
 
 Include "Parameters.geo";
 Include "Functions.geo";
+Include "naca.geo";
+Include "CreateComponents.geo";
 
-//-------------------------------------------------------------------//
-//                         SPHERE
-//-------------------------------------------------------------------//
+// Create geometry
+Call CreateSphere;
 
-
-// Sphere
-X_sphere = xo + x_sphere;
-Y_sphere = yo + y_sphere;
-Z_sphere = zo + z_sphere;
-
-vsphere = newv;
-Sphere(vsphere) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
-
-// Cut the shaft volume from this sphere
-
-// Shaft cylinder
-vshaft = newv;
-Cylinder(vshaft) = {xo, yo, zo, 0, 0, shaft_height, shaft_radius, 2*Pi};
-Printf("Created shaft volume (%g)");
-
-vtot = newv;
-BooleanDifference(vtot) = { Volume{vsphere}; Delete; }{ Volume{vshaft}; Delete; };
-
+// Specify mesh characteristics
+Mesh.CharacteristicLengthExtendFromBoundary = 1; 
+Mesh.CharacteristicLengthFactor = 0.5; 
+Mesh.CharacteristicLengthMin = 0; 
+Mesh.CharacteristicLengthMax = 1.0; 
+Mesh.CharacteristicLengthFromCurvature = 1; 
+//Mesh.CharacteristicLengthFromPoints = 1; 
+Mesh.Optimize = 1; 
+Mesh.SubdivisionAlgorithm = 1; 
+Mesh.RecombinationAlgorithm = 1; 
+Mesh.RecombineAll = 1; 
+Mesh.RemeshAlgorithm = 0; 
+Mesh.RemeshParametrization = 0; 
+Mesh.RefineSteps = 10; 
+Mesh.Smoothing = 5;
+Mesh.ElementOrder=2; 
+Mesh.BdfFieldFormat=2; 
+Mesh.Format=31; 
+Mesh.SaveElementTagType=1;

@@ -95,7 +95,6 @@ vconn4 = out[0];
 // Unite all volumes into one
 vplate = newv;
 BooleanUnion(vplate) = { Volume{vnew}; Delete;}{ Volume{vconn4}; Delete;};
-Coherence;
 
 // create a new sphere to cut
 X_sphere =  x_sphere;
@@ -206,11 +205,9 @@ vconn4 = out[0];
 // Unite all volumes into one
 v1 = newv;
 BooleanUnion(v1) = { Volume{vconn3}; Delete;}{ Volume{vconn4}; Delete;};
-Coherence;
 
 v2 = newv;
 BooleanUnion(v2) = { Volume{vnew}; Delete;}{ Volume{vconn2}; Delete;};
-Coherence;
 
 vplate = newv;
 BooleanUnion(vplate) = { Volume{v1}; Delete;}{ Volume{v2}; Delete;};
@@ -500,9 +497,6 @@ Surface{s};
 };
 srotated = out[0];
 
-// Delete the points making the surface
-
-
 // Extrude the surface to create a volume
 out[] = Extrude {R, 0, 0} { Surface{srotated}; Layers{(R-r_cutout)/cl }; };
 vblade = out[1];
@@ -520,9 +514,6 @@ Printf("volume of the blade %g", vblade);
 //Physical Surface("bottom_hub_surface", 3) = out[0];
 //Physical Surface("lateral_surface", 4) = {out[2], out[3], out[4], out[5]};
 
-// Delete the duplicate surface and points
-// Create a volume number for the blade
- 
 //--------------------------------------------------------------------//
 // Create a blade connector body
 //--------------------------------------------------------------------//
@@ -540,7 +531,7 @@ Cylinder(vbladeconn) = {xbconn, ybconn, zbconn, dx, dy, dz, blade_conn_radius, 2
 
 vbladex = newv;
 BooleanUnion(vbladex) = { Volume{vbladeconn}; Delete; }{ Volume{vblade}; Delete; };
-
+NewVolume = vbladex;
 Return
 //
 Function CreateDoubleBladeHub
@@ -590,21 +581,14 @@ vfinal2 = newv;
 BooleanUnion(vfinal2) = { Volume{vfinal}; Delete; }{ Volume{vhubconn2}; Delete; };
 Return
 //
-Function RotateBlade
-// rotation_angle
-// blade_vnum
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, rotation_angle} {
-Duplicata{ Volume{blade_vnum}; }
+Function CreateBladeNegativeX
+Call CreateBladeX;
+vbladex = NewVolume;
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Volume{vbladex};
 };
 vrotated = out[0];
-Printf("New blade volume is %g", vrotated);
-Return
-//
-Function CreateBladeNegativeX
-// Rotate the blade by Pi
-rotation_angle = Pi;
-blade_vnum = vbladex;
-Call RotateBlade;
+NewVolume = vrotated;
 Return
 //
 Function CreateLowerPushHorn
@@ -852,7 +836,7 @@ Return
 //
 
 
-Function CreateMalePitchLink
+Function CreateLowerPitchLink
 // angle is the input
 
 // Spherical cap point on the upper swash plate
@@ -949,7 +933,7 @@ BooleanDifference(vtot) = { Volume{vnew}; Delete;}{ Volume{vbolt}; Delete;};
 NewVolume = vtot;
 Return
 //
-Function CreateFemalePitchLink
+Function CreateUpperPitchLink
 //
 aoffset = 0;
 x = uswash_outer_radius*Cos(aoffset) - link_length/2.0;
@@ -960,7 +944,7 @@ z = z_blade;
 xloc = x*Cos(theta) - y*Sin(theta);
 yloc = x*Sin(theta) + y*Cos(theta) + horn_outer_radius;
 zloc = z;
-Printf("Female Pitchlink coordinates %f %f %f", xloc, yloc, zloc);
+Printf("Upper Pitchlink coordinates %f %f %f", xloc, yloc, zloc);
 
 // Create a cylinder that extends along x-direction of radius
 // blade_conn_radius and height from upper_Swash_radius upto
@@ -1014,5 +998,25 @@ BooleanDifference(v2) = { Volume{vtot}; Delete; }{ Volume{vhbconn};};
 v3 = newv;
 BooleanUnion(v3) = { Volume{v2}; Delete; }{ Volume{vhbconn}; Delete;};
 NewVolume = v3;
+Return
+//
+Function CreateSphere
+// Sphere
+X_sphere = xo + x_sphere;
+Y_sphere = yo + y_sphere;
+Z_sphere = zo + z_sphere;
+
+vsphere = newv;
+Sphere(vsphere) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
+
+// Cut the shaft volume from this sphere
+
+// Shaft cylinder
+vshaft = newv;
+Cylinder(vshaft) = {xo, yo, zo, 0, 0, shaft_height, shaft_radius, 2*Pi};
+Printf("Created shaft volume (%g)");
+
+vtot = newv;
+BooleanDifference(vtot) = { Volume{vsphere}; Delete; }{ Volume{vshaft}; Delete; };
 Return
 //
