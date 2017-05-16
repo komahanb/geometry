@@ -89,8 +89,25 @@ Call CreateBladeX;
 // Create a blade at 180
 Call CreateBladeNegativeX;
 
-theta = upper_swash_angle;
-Call CreateMalePitchLink;
+//-------------------------------------------------------------------//
+//                    PITCH LINKS
+//-------------------------------------------------------------------//
 
-theta = Pi + upper_swash_angle;
+theta = upper_swash_angle;
+
 Call CreateMalePitchLink;
+vlowerpitch0 = NewVolume;
+
+Call CreateFemalePitchLink;
+vupperpitch0 = NewVolume;
+
+// Rotate the links for the other blade
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Duplicata{Volume{vlowerpitch0};}
+};
+vlowerpitch180 = out[0];
+
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Duplicata{Volume{vupperpitch0};}
+};
+vupperpitch180 = out[0];

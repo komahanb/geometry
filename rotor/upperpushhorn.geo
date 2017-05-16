@@ -1,12 +1,21 @@
-// 
+//----------------------------------------------------------------//
+//                    Main sequence
+//----------------------------------------------------------------//
+
 SetFactory("OpenCASCADE");
 
 Include "Parameters.geo";
 Include "Functions.geo";
+Include "naca.geo";
 Include "CreateComponents.geo";
 
-xloc = 0.0;
-yloc = 0.0;
-zloc = 0.0;
+//-------------------------------------------------------------------//
+//                    PUSH HORN
+//-------------------------------------------------------------------//
 
+aoffset = 0;
+xloc = base_radius*Cos(aoffset) - link_length/2.0;
+yloc = base_radius*Sin(aoffset) ;
+zloc = z_lower_swash+ lower_swash_height/2.0;
 Call CreateUpperPushHorn;
+vuph = NewVolume;

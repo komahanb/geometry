@@ -566,11 +566,11 @@ Printf("Combined shaft and hub volume (%g)", vtot);
 xhconn = x_hub;
 yhconn = y_hub;
 zhconn = z_hub + shaft_height - hub_height/2.0 ;
-dx = upper_swash_radius;
-dy = 0;
-dz = 0;
+
+// Position of the connection between male and female pitch horns
+dx = hub_conn_length + hub_radius;
 vhubconn = newv;
-Cylinder(vhubconn) = {xhconn, yhconn, zhconn, dx, dy, dz, blade_conn_radius, 2*Pi};
+Cylinder(vhubconn) = {xhconn, yhconn, zhconn, dx, 0, 0, hub_conn_radius, 2*Pi};
 
 vfinal = newv;
 BooleanUnion(vfinal) = { Volume{vtot}; Delete; }{ Volume{vhubconn}; Delete; };
@@ -582,11 +582,9 @@ BooleanUnion(vfinal) = { Volume{vtot}; Delete; }{ Volume{vhubconn}; Delete; };
 xhconn = x_hub;
 yhconn = y_hub;
 zhconn = z_hub + shaft_height - hub_height/2.0 ;
-dx = -upper_swash_radius;
-dy = 0;
-dz = 0;
+dx = -(hub_conn_length + hub_radius);
 vhubconn2 = newv;
-Cylinder(vhubconn2) = {xhconn, yhconn, zhconn, dx, dy, dz, blade_conn_radius, 2*Pi};
+Cylinder(vhubconn2) = {xhconn, yhconn, zhconn, dx, 0, 0, hub_conn_radius, 2*Pi};
 
 vfinal2 = newv;
 BooleanUnion(vfinal2) = { Volume{vfinal}; Delete; }{ Volume{vhubconn2}; Delete; };
@@ -618,12 +616,14 @@ xbcy = xloc;
 ybcy = yloc;
 zbcy = zloc;
 
+Printf("LPH tail center coordinates %f %f %f", xloc, yloc, zloc);
+
 hrod = horn_length;
 rrod = 0.99*horn_base_radius;
 
 vbody = newv;
 Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
-Printf("Created body pushrod cylinder = %g", vbody);
+Printf("Created body lower pushrod cylinder = %g", vbody);
 
 //-------------------------------------------------------------------//
 // Create a tail cylinder
@@ -711,11 +711,23 @@ Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 vlowerpushhorn = newv;
 BooleanUnion(vlowerpushhorn) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
 //
+
 out[] = Rotate {{0, 1, 0}, {xloc, yloc, zloc}, pushrod_angle} {
 Volume{vlowerpushhorn};
 };
 vfinal = out[0];
 NewVolume = vfinal;
+
+// Lower hinge point
+p = newp;
+Point(p) = {xloc, yloc, zloc + horn_length};
+out[] = Rotate {{0, 1, 0}, {xloc, yloc, zloc}, pushrod_angle} {
+Point{p};
+};
+phinge = out[0];
+NewPoint = phinge;
+Printf("LPH head center coordinates %f %f %f", Point{phinge});
+Delete{ Point{phinge};}
 
 Return
 //
@@ -728,6 +740,8 @@ Function CreateUpperPushHorn
 xbcy = xloc;
 ybcy = yloc;
 zbcy = zloc;
+
+Printf("UPH head center coordinates %f %f %f", xloc, yloc, zloc);
 
 hrod = horn_length;
 rrod = 0.99*horn_base_radius;
@@ -770,8 +784,6 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 //-------------------------------------------------------------------//
 // Create a TAIL cylinder with REVOLUTE cavity
 //-------------------------------------------------------------------//
-
-
 // 1. Add a cylinder of full height and radius
 
 hcy   = 2*horn_base_radius;
@@ -824,6 +836,17 @@ Volume{vfinal};
 };
 vfinal = out[0];
 NewVolume = vfinal;
+
+// Upper hinge point
+p = newp;
+Point(p) = {xloc, yloc, zloc - horn_length};
+out[] = Rotate {{0, 1, 0}, {xloc, yloc, zloc}, -pushrod_angle} {
+Point{p};
+};
+phinge = out[0];
+NewPoint = phinge;
+Printf("UPH tail center coordinates %f %f %f", Point{phinge});
+Delete{ Point{phinge};}
 //
 Return
 //
@@ -886,6 +909,12 @@ Printf("Punched spherical hole in pitchlink = %g", vspheretmp);
 v = newv;
 BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 
+// Rotate the male pitch link to align with the base
+out[] = Rotate {{0, 0, 1}, {xloc, yloc, zloc}, upper_swash_angle} {
+Volume{v};
+};
+vpitch = out[0];
+
 // Attach a male part with cylindrical head and punched nut at the other end of the rod
 hcy   = 2*horn_base_radius;
 rcy   = horn_outer_radius;
@@ -897,10 +926,16 @@ zcy   = zloc + pitchlink_length;
 vmale = newv;
 Cylinder(vmale) = {xcy, ycy, zcy, hcy, 0, 0, rcy, 2*Pi};
 
+// Unite the bolt with body
+vtmp = newv;
+BooleanDifference(vtmp) = { Volume{vpitch}; Delete;}{ Volume{vmale};};
+
+vnew = newv;
+BooleanUnion(vnew) = { Volume{vtmp}; Delete;}{ Volume{vmale}; Delete;};
+
 // Add a bolt
 hcy   = 2*2*horn_base_radius;
 rcy   = horn_bolt_radius;
-
 ycy   = yloc;
 xcy   = xloc - 2.0*horn_base_radius;
 zcy   = zloc + pitchlink_length;
@@ -908,5 +943,76 @@ zcy   = zloc + pitchlink_length;
 vbolt = newv;
 Cylinder(vbolt) = {xcy, ycy, zcy, hcy, 0, 0, rcy, 2*Pi};
 
+// Unite the bolt with body
+vtot = newv;
+BooleanDifference(vtot) = { Volume{vnew}; Delete;}{ Volume{vbolt}; Delete;};
+NewVolume = vtot;
+Return
+//
+Function CreateFemalePitchLink
+//
+aoffset = 0;
+x = uswash_outer_radius*Cos(aoffset) - link_length/2.0;
+y = uswash_outer_radius*Sin(aoffset) ;
+z = z_blade;
+
+// Rotate the joint point
+xloc = x*Cos(theta) - y*Sin(theta);
+yloc = x*Sin(theta) + y*Cos(theta) + horn_outer_radius;
+zloc = z;
+Printf("Female Pitchlink coordinates %f %f %f", xloc, yloc, zloc);
+
+// Create a cylinder that extends along x-direction of radius
+// blade_conn_radius and height from upper_Swash_radius upto
+// blade_conn_start
+dy = yloc - y_blade;
+
+// Extend a connector
+v = newv;
+rad = 3.0*horn_base_radius;
+Cylinder(v) = {xloc, yloc, zloc, 0, -dy, 0, rad, 2*Pi};
+
+// Cut out a slot for the hinge
+dx = 2*2*horn_base_radius;
+dy = 2*horn_base_radius;
+dz = 3.0*horn_base_radius;
+vblock = newv;
+Block(vblock) = {xloc-2*horn_base_radius, 
+              yloc, 
+              zloc-3.0*horn_base_radius, 
+              dx, -2.5*dy, 2.0*dz};
+
+v1 = newv;
+BooleanDifference(v1) = { Volume{v}; Delete; }{ Volume{vblock}; Delete; };
+
+// Add a bolt
+hcy   = 2*2*horn_base_radius;
+rcy   = horn_bolt_radius;
+ycy   = yloc - 2*horn_base_radius;
+xcy   = xloc - 2.0*horn_base_radius;
+zcy   = zloc;
+//
+vbolt = newv;
+Cylinder(vbolt) = {xcy, ycy, zcy, hcy, 0, 0, rcy, 2*Pi};
+//
+// Unite the bolt with body
+vtot = newv;
+BooleanUnion(vtot) = { Volume{v1}; Delete;}{ Volume{vbolt}; Delete;};
+//
+// Add a connector cylinder along x direction from the hub connector
+// to the blade connector
+dx = hub_blade_conn_length;
+xloc = hub_radius + hub_conn_length;
+yloc = y_blade;
+zloc = z_blade;
+vhbconn = newv;
+Cylinder(vhbconn) = {xloc, yloc, zloc, dx, 0, 0, rad, 2*Pi};
+//
+v2 = newv;
+BooleanDifference(v2) = { Volume{vtot}; Delete; }{ Volume{vhbconn};};
+//
+v3 = newv;
+BooleanUnion(v3) = { Volume{v2}; Delete; }{ Volume{vhbconn}; Delete;};
+NewVolume = v3;
 Return
 //

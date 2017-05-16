@@ -66,12 +66,17 @@ pitchlink_length = z_blade -  (z_upper_swash + upper_swash_height/2.0);
 link_length = 6.0*pushrod_inner_radius;
 link_radius = pushrod_inner_radius;
 
-upper_swash_angle = Pi/10.0;
+upper_swash_angle = Pi/6.0;
 uswash_outer_radius = base_radius - link_length;
 swash_connplate_length = 1.5*link_length;
 
-blade_conn_length       = DefineNumber[ link_length, Name "Parameters/conn_length" ];
-blade_conn_radius       = DefineNumber[ 0.65*(0.5*hub_height), Name "Parameters/conn_radius" ];
+// Define the connector dimensions
+blade_conn_length     = DefineNumber[ 0.1*(cutout_radius-hub_radius), Name "Parameters/conn_length" ];
+blade_conn_radius     = DefineNumber[ 0.65*(0.5*hub_height), Name "Parameters/conn_radius" ];
+hub_conn_length       = 0.05*(cutout_radius-hub_radius);
+hub_conn_radius       = blade_conn_radius;
+hub_blade_conn_length = 0.85*(cutout_radius-hub_radius);
+hub_blade_conn_radius = hub_conn_radius;
 
  //pushrod_height/2.0;
 pushrod_angle = Pi/4;
@@ -81,3 +86,6 @@ horn_base_radius  = pushrod_base_radius;
 horn_outer_radius = pushrod_outer_radius;
 horn_inner_radius = pushrod_sphere_radius;
 
+//pitchlength = 1.0;
+//pitchwidth  = 0.5;
+//pitchheight = 0.5;
