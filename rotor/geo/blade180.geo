@@ -1,17 +1,19 @@
-// Lower swash plate geometry and mesh characteristics
+// Upper swash plate geometry and mesh characteristics
 SetFactory("OpenCASCADE");
 
-Include "Parameters.geo";
-Include "Functions.geo";
-Include "naca.geo";
-Include "CreateComponents.geo";
+Include "../Parameters.geo";
+Include "../Functions.geo";
+Include "../naca.geo";
+Include "../CreateComponents.geo";
 
 // Create geometry
-Call CreateLowerSwashPlate;
+//Call CreateBladeNegativeX;
+
+Merge "brep/blade180.brep";
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 
-Mesh.CharacteristicLengthFactor = 0.2; 
+Mesh.CharacteristicLengthFactor = 0.1; 
 Mesh.CharacteristicLengthMin = 0; 
 Mesh.CharacteristicLengthMax = 1.0; 
 Mesh.CharacteristicLengthFromCurvature = 0; 

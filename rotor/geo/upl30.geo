@@ -1,18 +1,16 @@
-// Upper swash plate geometry and mesh characteristics
+// Geometry and mesh characteristics
 SetFactory("OpenCASCADE");
 
-Include "Parameters.geo";
-Include "Functions.geo";
-Include "naca.geo";
-Include "CreateComponents.geo";
+Include "../Parameters.geo";
+Include "../Functions.geo";
+Include "../naca.geo";
+Include "../CreateComponents.geo";
 
 // Create geometry
 aoffset = 0;
-xloc = base_radius*Cos(aoffset) - link_length/2.0;
-yloc = base_radius*Sin(aoffset);
-zloc = z_lower_swash + lower_swash_height/2.0;
-Call CreateUpperPushHorn;
-vuph = NewVolume;
+theta = upper_swash_angle;
+Call CreateUpperPitchLink;
+vupperpitch0 = NewVolume;
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 

@@ -1,20 +1,16 @@
 // Geometry and mesh characteristics
 SetFactory("OpenCASCADE");
 
-Include "Parameters.geo";
-Include "Functions.geo";
-Include "naca.geo";
-Include "CreateComponents.geo";
+Include "../Parameters.geo";
+Include "../Functions.geo";
+Include "../naca.geo";
+Include "../CreateComponents.geo";
 
 // Create geometry
 aoffset = 0;
 theta = upper_swash_angle;
-Call CreateUpperPitchLink;
-vupperpitch0 = NewVolume;
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
-Volume{vupperpitch0};
-};
-vupperpitch180 = out[0];
+Call CreateLowerPitchLink;
+vlowerpitch0 = NewVolume;
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 

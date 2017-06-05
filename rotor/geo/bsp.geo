@@ -1,13 +1,13 @@
-// Upper swash plate geometry and mesh characteristics
+// Baseplate geometry and mesh characteristics
 SetFactory("OpenCASCADE");
 
-Include "Parameters.geo";
-Include "Functions.geo";
-Include "naca.geo";
-Include "CreateComponents.geo";
+Include "../Parameters.geo";
+Include "../Functions.geo";
+Include "../naca.geo";
+Include "../CreateComponents.geo";
 
 // Create geometry
-Call CreatePushRod180;
+Call CreateBasePlate;
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 
