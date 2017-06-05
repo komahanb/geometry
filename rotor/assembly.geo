@@ -71,9 +71,11 @@ Call CreateUpperSwashPlate;
 
 // Create a blade at zero
 Call CreateBladeX;
+Call CreateBladeCapX;
 
 // Create a blade at 180
 Call CreateBladeNegativeX;
+Call CreateBladeCapNegativeX;
 
 //-------------------------------------------------------------------//
 //                    PITCH LINKS

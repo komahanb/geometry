@@ -49,7 +49,9 @@ rcy = link_radius;
 vlinktmp = newv;
 Cylinder(vlinktmp) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
 
-// create a new sphere to add to the link
+// create a new sphere cap to add to the link
+pspherecap = newp;
+Point(pspherecap) = {xlink, ylink + link_length/2.0, zlink}; // a joint location
 vspheretmp = newv;
 Sphere(vspheretmp) = {xlink, ylink + link_length/2.0 , zlink, pushrod_sphere_radius, -Pi/2, Pi/2, 2*Pi};
 vlink  = newv;
@@ -68,6 +70,14 @@ BooleanUnion(v) = { Volume{vtot}; Delete;}{ Volume{vlink}; Delete;};
 
 vcyl = newv;
 Cylinder(vcyl) = {x_upper_swash, y_upper_swash, z_upper_swash, 0, 0, upper_swash_height, upper_swash_radius, 2*Pi};
+Printf("usp_sphere_coordinates: %f %f %f", 
+                                x_upper_swash, 
+                                y_upper_swash, 
+                                z_upper_swash+upper_swash_height/2.0);
+Printf("lsp_usp_coordinates: %f %f %f", 
+                                x_upper_swash, 
+                                y_upper_swash, 
+                                z_upper_swash);
 
 // Remove the piece separately
 vpiece = newv;
@@ -87,10 +97,24 @@ Volume{vnew};
 };
 vconn3 = out[0];
 
+// Figure out the rotated point
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, upper_swash_angle} {
+Point{pspherecap};
+};
+prot = out[0]; // Rotated joint location
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot}, upper_swash_angle);
+
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 Duplicata { Volume{vconn3}; }
 };
 vconn4 = out[0];
+
+// Figure out the rotated point
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Duplicata{ Point{prot}; }
+};
+prot2 = out[0]; // Rotated joint location
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, Pi + upper_swash_angle);
 
 // Unite all volumes into one
 vplate = newv;
@@ -449,7 +473,7 @@ Return
 //
 Function CreateBladeX
 // Airfoil
-cl       = 0.01; // characteristic length of the mesh //0.01
+cl       = 0.01;  // characteristic length of the mesh //0.01
 chord    = 0.121; // chord of the airfoil
 r_cutout = 0.44;  // cutout radius of the root
 R        = 2.0;   // Tip radius
@@ -500,7 +524,10 @@ srotated = out[0];
 // Extrude the surface to create a volume
 out[] = Extrude {R, 0, 0} { Surface{srotated}; Layers{(R-r_cutout)/cl }; };
 vblade = out[1];
+sbc = out[0];
+
 Printf("volume of the blade %g", vblade);
+Printf("Boundary surface is %g", sbc);
 
 //surfaces contains in the following order:
 //[0] - front surface (opposed to source surface)
@@ -511,13 +538,15 @@ Printf("volume of the blade %g", vblade);
 //[4] - top surface (belonging to 3rd line in "Line Loop (6)")
 //[5] - left surface (belonging to 4th line in "Line Loop (6)") 
 // Looking from TOP at XY plane according to gmsh convention
-//Physical Surface("bottom_hub_surface", 3) = out[0];
+// Physical Surface("bottom_hub_surface", newp) = sbc;
 //Physical Surface("lateral_surface", 4) = {out[2], out[3], out[4], out[5]};
-
+NewVolume = vblade;
+Return
+//
+Function CreateBladeCapX
 //--------------------------------------------------------------------//
 // Create a blade connector body
 //--------------------------------------------------------------------//
-
 xbconn = x_blade + cutout_radius;
 ybconn = y_blade;
 zbconn = z_blade;
@@ -528,10 +557,17 @@ dz = 0;
 
 vbladeconn = newv;
 Cylinder(vbladeconn) = {xbconn, ybconn, zbconn, dx, dy, dz, blade_conn_radius, 2*Pi};
-
-vbladex = newv;
-BooleanUnion(vbladex) = { Volume{vbladeconn}; Delete; }{ Volume{vblade}; Delete; };
-NewVolume = vbladex;
+NewVolume = vbladeconn;
+Return
+//
+Function CreateBladeCapNegativeX
+Call CreateBladeCapX;
+vbladex = NewVolume;
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Volume{vbladex};
+};
+vrotated = out[0];
+NewVolume = vrotated;
 Return
 //
 Function CreateDoubleBladeHub
@@ -558,8 +594,11 @@ xhconn = x_hub;
 yhconn = y_hub;
 zhconn = z_hub + shaft_height - hub_height/2.0 ;
 
-// Position of the connection between male and female pitch horns
 dx = hub_conn_length + hub_radius;
+phubupl = newp;
+Point(phubupl) = {x_hub + dx - hub_radius, yhconn, zhconn};
+Printf("hub_uph hinge coordinates %f %f %f ", Point{phubupl});
+
 vhubconn = newv;
 Cylinder(vhubconn) = {xhconn, yhconn, zhconn, dx, 0, 0, hub_conn_radius, 2*Pi};
 
@@ -857,6 +896,10 @@ zbcy = zloc;
 
 hrod = pitchlink_length;
 rrod = 0.99*horn_base_radius;
+Printf("Pitchlink length = %f", hrod);
+
+plplupl = newp;
+Point(plplupl) = {xbcy, ybcy, zbcy + hrod}; // a joint point
 
 vbody = newv;
 Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
@@ -946,9 +989,7 @@ yloc = x*Sin(theta) + y*Cos(theta) + horn_outer_radius;
 zloc = z;
 Printf("Upper Pitchlink coordinates %f %f %f", xloc, yloc, zloc);
 
-// Create a cylinder that extends along x-direction of radius
-// blade_conn_radius and height from upper_Swash_radius upto
-// blade_conn_start
+// Create a cylinder that extends along y-direction
 dy = yloc - y_blade;
 
 // Extend a connector
@@ -1018,5 +1059,6 @@ Printf("Created shaft volume (%g)");
 
 vtot = newv;
 BooleanDifference(vtot) = { Volume{vsphere}; Delete; }{ Volume{vshaft}; Delete; };
+
 Return
 //

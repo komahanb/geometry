@@ -78,7 +78,7 @@ hub_conn_radius       = blade_conn_radius;
 hub_blade_conn_length = 0.85*(cutout_radius-hub_radius);
 hub_blade_conn_radius = hub_conn_radius;
 
- //pushrod_height/2.0;
+//pushrod_height/2.0;
 pushrod_angle = Pi/4;
 horn_length = 0.5*(z_lower_swash + 0.5*lower_swash_height - 0.5*base_height)/Cos(pushrod_angle);
 horn_bolt_radius  = link_radius/2.0;
