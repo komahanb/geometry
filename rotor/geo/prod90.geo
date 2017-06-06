@@ -11,7 +11,7 @@ Call CreatePushRod90;
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 
-Mesh.CharacteristicLengthFactor = 0.2; 
+Mesh.CharacteristicLengthFactor = 0.35; 
 Mesh.CharacteristicLengthMin = 0; 
 Mesh.CharacteristicLengthMax = 1.0; 
 Mesh.CharacteristicLengthFromCurvature = 0; 
