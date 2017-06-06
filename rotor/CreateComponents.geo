@@ -596,39 +596,27 @@ Printf("Created hub volume (%g)", vhub);
 vtot = newv;
 BooleanUnion(vtot) = { Volume{vshaft}; Delete; }{ Volume{vhub}; Delete; };
 Printf("Combined shaft and hub volume (%g)", vtot);
+////////////////////////////////////////////////////////////////////////
 
 //--------------------------------------------------------------------//
 // Create a hub connector body on right
 //--------------------------------------------------------------------//
 
-xhconn = x_hub;
-yhconn = y_hub;
-zhconn = z_hub + shaft_height - hub_height/2.0;
 dx = hub_conn_length + hub_radius;
 
-vhubconn = newv;
-Cylinder(vhubconn) = {xhconn, yhconn, zhconn, dx, 0, 0, hub_conn_radius, 2*Pi};
+xhconn = x_hub - dx;
+yhconn = y_hub;
+zhconn = z_hub + shaft_height - hub_height/2.0;
+
+vhubconntmp = newv;
+Cylinder(vhubconntmp) = {xhconn, yhconn, zhconn, 2.0*dx, 0, 0, hub_conn_radius, 2*Pi};
 
 vfinal = newv;
-BooleanUnion(vfinal) = { Volume{vtot}; Delete; }{ Volume{vhubconn}; Delete; };
+BooleanUnion(vfinal) = { Volume{vtot}; Delete; }{ Volume{vhubconntmp}; Delete; };
 
 P_HUB_UPL30 = newp;
 Point(P_HUB_UPL30) = {hub_radius + hub_conn_length, yhconn, zhconn};
 Printf("P_HUB_UPL30 %.16f %.16f %.16f ", Point{P_HUB_UPL30});
-
-//--------------------------------------------------------------------//
-// Create a hub connector body on the left
-//--------------------------------------------------------------------//
-
-xhconn = x_hub;
-yhconn = y_hub;
-zhconn = z_hub + shaft_height - hub_height/2.0 ;
-dx = -(hub_conn_length + hub_radius);
-vhubconn2 = newv;
-Cylinder(vhubconn2) = {xhconn, yhconn, zhconn, dx, 0, 0, hub_conn_radius, 2*Pi};
-
-vfinal2 = newv;
-BooleanUnion(vfinal2) = { Volume{vfinal}; Delete; }{ Volume{vhubconn2}; Delete; };
 
 P_HUB_UPL210 = newp;
 Point(P_HUB_UPL210) = {-(hub_radius + hub_conn_length), yhconn, zhconn};
