@@ -2,6 +2,8 @@
 import sys
 sys.path.append("/usr/lib/freecad/lib")
 
+import numpy as np
+
 # Import CAD
 import FreeCAD
 import Part
@@ -30,14 +32,35 @@ def writeProps(brep, name):
     J = solid.MatrixOfInertia
     
     print "Creating property file", key + '.dat'
-        
-    fp = open(key + '.dat', 'w')    
+    
+    c = [0.0, 0.0, 0.0]
+    Jmat = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    xcm = [0.0, 0.0, 0.0]
+    
+    CTMP = [solid.StaticMoments[0], solid.StaticMoments[1], solid.StaticMoments[2]]
+    JTMP = [J.A11, J.A12, J.A13, J.A22, J. A23, J.A33]
+    xcmtmp = [solid.CenterOfMass.x, solid.CenterOfMass.y, solid.CenterOfMass.z]
+    
+    for i in xrange(3):
+        #if abs(CTMP[i]) > 1.0e-16:        
+        if abs(xcmtmp[i]) > 1.0e-16:
+            c[i] = CTMP[i]
+            xcm[i] = xcmtmp[i]
+
+    for i in xrange(6):
+        if abs(JTMP[i]) > 1.0e-16:
+            Jmat[i] = JTMP[i]
+
+    # Assert the equivalence of xcg and c/volume
+    assert(np.allclose(np.array(xcm), np.array(c)/solid.Volume) , 1)
+            
+    fp = open(key + '.dat', 'w')   
     fp.write('name %s\n' % name)
     fp.write('density %s\n' % Density)
     fp.write('volume %s\n' % solid.Volume)
-    fp.write('c %s %s %s\n' % (solid.StaticMoments[0], solid.StaticMoments[1], solid.StaticMoments[2]))
-    fp.write('J %s %s %s %s %s %s\n' % (J.A11, J.A12, J.A13, J.A22, J. A23, J.A33))
-    fp.write('xcg %s %s %s\n' % (solid.CenterOfMass.x, solid.CenterOfMass.y, solid.CenterOfMass.z))
+    fp.write('c %s %s %s\n' % (c[0], c[1], c[2]))
+    fp.write('J %s %s %s %s %s %s\n' % (Jmat[0], Jmat[1], Jmat[2], Jmat[3], Jmat[4], Jmat[5]))
+    fp.write('xcg %s %s %s\n' % (xcm[0], xcm[1], xcm[2]))
     fp.write('vel %s %s %s\n' % (0.0,0.0,vz))
     fp.write('omega %s %s %s\n' % (0.0,0.0,Omega))
     fp.write('grav %s %s %s\n' % (0.0,0.0,Grav))
