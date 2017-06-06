@@ -150,6 +150,10 @@ rpcy = pushrod_inner_radius;
 Rpcy = pushrod_outer_radius;
 pangle = 2*Pi;
 
+P_BSP_PROD = newp;
+Point(P_BSP_PROD) = {xtmp, ytmp, ztmp};
+Printf("P_BSP_PROD %.16f %.16f %.16f ", Point{P_BSP_PROD});
+
 // Create a solid cylider with outer radius as dim
 vtmp1 = newv;
 Printf("creating solid cylinder = %g", v2);

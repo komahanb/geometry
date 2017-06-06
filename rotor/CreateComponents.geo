@@ -259,14 +259,17 @@ rcy = inner_base_radius;
 Rcy = base_radius;
 angle = 2*Pi;
 Call HollowCylinderZ;
-Printf("Baseplate volume is (%g)", NewVolume);
+
+// Constraint point between baseplate and hub shaft
+P_BSP_HUB = newp;
+Point(P_BSP_HUB) = {xcy, ycy, zcy};
+Printf("P_BSP_HUB %.16f %.16f %.16f ", Point{P_BSP_HUB});
 
 // Add push rod hole at 90 degrees
 aoffset = Pi/2.0;
 roffset = pushrod_roffset;
 baseplate_vnum = NewVolume;
 Call AddPushRodHole;
-Printf("Baseplate volume is (%g)", NewVolume);
 
 // Add push rod hole at 180 degrees
 aoffset = Pi;
