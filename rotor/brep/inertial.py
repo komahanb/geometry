@@ -43,7 +43,7 @@ def writeProps(brep, name):
     
     for i in xrange(3):
         #if abs(CTMP[i]) > 1.0e-16:        
-        if abs(xcmtmp[i]) > 1.0e-16:
+        if abs(CTMP[i]) > 1.0e-16:
             c[i] = CTMP[i]
             xcm[i] = xcmtmp[i]
 
