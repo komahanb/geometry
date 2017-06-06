@@ -313,6 +313,10 @@ vbody = newv;
 Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
 Printf("Created body pushrod cylinder = %g", vbody);
 
+P_PROD90_BSP = newp;
+Point(P_PROD90_BSP) = {xbcy, ybcy, zbcy};
+Printf("P_PROD90_BSP %.16f %.16f %.16f ", Point{P_PROD90_BSP});
+
 //-------------------------------------------------------------------//
 // Create a head cylinder
 //-------------------------------------------------------------------//
@@ -337,6 +341,10 @@ NewVolume = vtot;
 xcy   = x_base + roffset*Cos(aoffset);
 ycy   = y_base + roffset*Sin(aoffset); 
 zcy   = z_lower_swash + lower_swash_height/2.0 ;
+
+P_PROD90_LSP = newp;
+Point(P_PROD90_LSP) = {xcy, ycy, zcy};
+Printf("P_PROD90_LSP %.16f %.16f %.16f ", Point{P_PROD90_LSP});
 
 vspheretmp = newv;
 Sphere(vspheretmp) = {xcy, ycy, zcy, pushrod_sphere_radius, -Pi/2, Pi/2, 2*Pi};
@@ -369,6 +377,10 @@ zbcy      = z_base;
 hrod      = pushrod_height;
 rrod      = pushrod_base_radius;
 
+P_PROD180_BSP = newp;
+Point(P_PROD180_BSP) = {xbcy, ybcy, zbcy};
+Printf("P_PROD180_BSP %.16f %.16f %.16f ", Point{P_PROD180_BSP});
+
 vbody = newv;
 Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
 Printf("Created body pushrod cylinder = %g", vbody);
@@ -397,6 +409,10 @@ NewVolume = vtot;
 xcy   = x_base + roffset*Cos(aoffset);
 ycy   = y_base + roffset*Sin(aoffset); 
 zcy   = z_lower_swash + lower_swash_height/2.0 ;
+
+P_PROD180_LSP = newp;
+Point(P_PROD180_LSP) = {xcy, ycy, zcy};
+Printf("P_PROD180_LSP %.16f %.16f %.16f ", Point{P_PROD180_LSP});
 
 vspheretmp = newv;
 Sphere(vspheretmp) = {xcy, ycy, zcy, pushrod_sphere_radius, -Pi/2, Pi/2, 2*Pi};
@@ -429,6 +445,10 @@ zbcy      = z_base;
 hrod      = pushrod_height;
 rrod      = pushrod_base_radius;
 
+P_PROD270_BSP = newp;
+Point(P_PROD270_BSP) = {xbcy, ybcy, zbcy};
+Printf("P_PROD270_BSP %.16f %.16f %.16f ", Point{P_PROD270_BSP});
+
 vbody = newv;
 Cylinder(vbody) = {xbcy, ybcy, zbcy, 0, 0, hrod, rrod, 2*Pi};
 Printf("Created body pushrod cylinder = %g", vbody);
@@ -457,6 +477,10 @@ NewVolume = vtot;
 xcy   = x_base + roffset*Cos(aoffset);
 ycy   = y_base + roffset*Sin(aoffset); 
 zcy   = z_lower_swash + lower_swash_height/2.0 ;
+
+P_PROD270_LSP = newp;
+Point(P_PROD270_LSP) = {xcy, ycy, zcy};
+Printf("P_PROD270_LSP %.16f %.16f %.16f ", Point{P_PROD270_LSP});
 
 vspheretmp = newv;
 Sphere(vspheretmp) = {xcy, ycy, zcy, pushrod_sphere_radius, -Pi/2, Pi/2, 2*Pi};
