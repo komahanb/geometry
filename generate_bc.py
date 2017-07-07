@@ -68,6 +68,31 @@ def getComponentIDs(bdf):
             tag.append(int(entry[2]))
     return remove_duplicates(tag)
 
+def getCBARNodesForComponentID(bc_nodes):
+    '''
+    Returns the nodes associated with the supplied element ID. This
+    call is useful to set boundary conditions on the nodes belonging
+    to this component id as SPC entries.
+    
+    Example: CBAR 85589 26 44 42 43
+
+    where EID = 85589, CID = 26, followed by the 9 nodeIDs forming the
+    element.
+    '''
+
+    # Create an empty list for storing the node ids belonging to the
+    # component id
+    cbarnode_ids  = []
+
+    # Logic to append 9 nodes of each CQUAD elements into the list
+    for line in bdf:
+        entry = line.split()
+        if entry[0] == "CBAR" and set([int(entry[3]), int(entry[4]), int(entry[5])]).issubset(bc_nodes):
+            # Append the cbar node indices to the list
+            cbarnode_ids.append([int(entry[3]), int(entry[4]), int(entry[5])])
+
+    return cbarnode_ids
+
 def getNodesForComponentID(comp_id):
     '''
     Returns the nodes associated with the supplied element ID. This
@@ -112,9 +137,9 @@ def getNodesForComponentID(comp_id):
 
     # The node_id list will contain duplicates, so we remove
     # duplicates. Also we sort the list for usefulness.
-    return sorted(remove_duplicates(node_ids))
+    return remove_duplicates(node_ids)
 
-def writeBCForComponent(cid):
+def writeBCForComponent(cid,bc_nodes):
     '''
     A function that writes SPC boundary conditions on the nodes
     beloging to the input component ID (cid). This is written into a
@@ -123,7 +148,6 @@ def writeBCForComponent(cid):
     boundary conditions.
     '''
     fp = open(bc_file, 'w')
-    bc_nodes = getNodesForComponentID(cid)
 
     # If BC nodes are present write as SPC entries
     num_bc_nodes = len(bc_nodes)
@@ -134,6 +158,19 @@ def writeBCForComponent(cid):
             spc = '123'
             fp.write('%-8s%8d%8d%8s%8.6f\n'%
                      ('SPC', 1, bc_nodes[i], spc, 0.0))                
+    fp.close()
+    return
+
+def writeCBAREntries(file,cbar_nodes,bc_nodes):
+    '''
+    A function that writes CBAR nodes to file
+    '''
+    fp = open(file, 'w')
+    num_cbar_nodes = len(cbar_nodes)/3
+    if num_cbar_nodes != 0:
+        for nodes in cbar_nodes:
+            fp.write('%-8s%8d%8d%8d\n'% ('CBAR',
+                                         nodes[0], nodes[1], nodes[2]))
     fp.close()
     return
 
@@ -241,7 +278,15 @@ if len(bc_cids) != 0:
             suffix = '.comp%d' % (bc_cid)
             bc_file = bdf_file + suffix + '.bc'
             print "BCs written out as " + bc_file
-            writeBCForComponent(bc_cid)
+            bc_nodes = getNodesForComponentID(bc_cid)
+            writeBCForComponent(bc_cid, bc_nodes)
+            
+            # Write the list of CBAR elements along the boundary surface
+            cbar_file = bdf_file.split(".bdf")[0] + '.cbar'
+            print "CBARs written out as " + cbar_file
+            cbar_nodes = getCBARNodesForComponentID(bc_nodes)
+            writeCBAREntries(cbar_file, cbar_nodes, bc_nodes)
+
 
 # Write out the user supplied BC nodes as SPC entries in a separate
 # file
@@ -251,3 +296,6 @@ if len(bc_nodes) != 0:
     bc_file = bdf_file + '.nodes' + '.bc'
     print "BCs written out as " + bc_file
     writeBCForNodes(bc_file, bc_nodes)
+    
+
+    
