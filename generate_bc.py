@@ -89,7 +89,7 @@ def getCBARNodesForComponentID(bc_nodes):
         entry = line.split()
         if entry[0] == "CBAR" and set([int(entry[3]), int(entry[4]), int(entry[5])]).issubset(bc_nodes):
             # Append the cbar node indices to the list
-            cbarnode_ids.append([int(entry[3]), int(entry[4]), int(entry[5])])
+            cbarnode_ids.append([int(entry[3]), int(entry[5]), int(entry[4])])
 
     return cbarnode_ids
 
