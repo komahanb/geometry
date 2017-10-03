@@ -1,4 +1,4 @@
-Function CreateUpperSwashPlate
+Function CreateDoubleUpperSwashPlate
 aoffset = 0;
 
 //-------------------------------------------------------------------//
@@ -1199,6 +1199,170 @@ Printf("Created shaft volume (%g)");
 
 vtot = newv;
 BooleanDifference(vtot) = { Volume{vsphere}; Delete; }{ Volume{vshaft}; Delete; };
+Return
+//
+Function CreateFourUpperSwashPlate
+aoffset = 0;
+//-------------------------------------------------------------------//
+// Add a block to the swash plate
+//-------------------------------------------------------------------//
 
+dxtmp = uswash_outer_radius;
+dytmp = swash_connplate_length;
+dztmp = upper_swash_height;
+
+xtmp = x_upper_swash;
+ytmp = y_upper_swash - dytmp/2.0;
+ztmp = z_upper_swash;
+
+vblock = newv;
+Block(vblock) = {xtmp, ytmp, ztmp, dxtmp, dytmp, dztmp};
+
+//-------------------------------------------------------------------//
+// Cut a smaller block out of this
+//-------------------------------------------------------------------//
+
+dxtmp = -link_length;
+dytmp = -link_length;
+dztmp = upper_swash_height;
+
+xtmp = uswash_outer_radius*Cos(aoffset);
+ytmp = uswash_outer_radius*Sin(aoffset) + link_length/2.0;
+ztmp = z_upper_swash;
+
+vsmallblock = newv;
+Block(vsmallblock) = {xtmp, ytmp, ztmp, dxtmp, dytmp, dztmp};
+
+vtot = newv;
+BooleanDifference(vtot) = { Volume{vblock}; Delete; }{ Volume{vsmallblock}; Delete; };
+
+//------------------------------------------------------------------//
+// Cylindrical link
+//------------------------------------------------------------------//
+
+xlink = uswash_outer_radius*Cos(aoffset) - link_length/2.0;
+ylink = uswash_outer_radius*Sin(aoffset) - link_length/2.0;
+zlink = z_upper_swash + upper_swash_height/2.0;
+
+hcy = link_length;
+rcy = link_radius;
+
+// Add a link along y dir
+vlinktmp = newv;
+Cylinder(vlinktmp) = {xlink, ylink, zlink, 0, hcy, 0, rcy, 2*Pi};
+
+//-------------------------------------------------------------------//
+// create a new sphere cap to add to the link
+//-------------------------------------------------------------------//
+
+pspherecap = newp;
+Point(pspherecap) = {xlink, ylink + link_length/2.0, zlink}; // a joint location
+vspheretmp = newv;
+Sphere(vspheretmp) = {xlink, ylink + link_length/2.0 , zlink, pushrod_sphere_radius, -Pi/2, Pi/2, 2*Pi};
+vlink  = newv;
+BooleanUnion(vlink) = { Volume{vlinktmp}; Delete;}{ Volume{vspheretmp}; Delete;};
+
+// Add the spherical headed connector to the total volume of the plate
+v = newv;
+BooleanUnion(v) = { Volume{vtot}; Delete;}{ Volume{vlink}; Delete;};
+
+//v = Fillet{v}{11, 18, 25, 23, 7, 5, 6, 21, 19, 20, 12, 17, 22, 9, 16, 14, 8, 10}{0.0025};
+//Printf("newvol %g", v);
+
+//-------------------------------------------------------------------//
+//                   MAIN CYLINDRICAL PLATE
+//-------------------------------------------------------------------//
+
+vcyl = newv;
+Cylinder(vcyl) = {x_upper_swash, y_upper_swash, z_upper_swash, 0, 0, upper_swash_height, upper_swash_radius, 2*Pi};
+Printf("usp_sphere_coordinates: %f %f %f", 
+                                x_upper_swash, 
+                                y_upper_swash, 
+                                z_upper_swash+upper_swash_height/2.0);
+Printf("lsp_usp_coordinates: %f %f %f", 
+                                x_upper_swash, 
+                                y_upper_swash, 
+                                z_upper_swash);
+
+// Remove the piece separately
+vpiece = newv;
+BooleanDifference(vpiece) = { Volume{v}; Delete;}{ Volume{vcyl};};
+
+// Now add the piece to the cylinder
+vnew = newv;
+BooleanUnion(vnew) = { Volume{vcyl}; Delete;}{ Volume{vpiece}; Delete;};
+
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, upper_swash_angle} {
+Volume{vnew};
+};
+vconn3 = out[0];
+
+// Figure out the rotated point
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, upper_swash_angle} {
+Point{pspherecap};
+};
+prot = out[0]; // Rotated joint location
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot}, upper_swash_angle);
+
+// 180 degrees
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Duplicata { Volume{vconn3}; }
+};
+vconn4 = out[0];
+
+// Figure out the rotated point
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Duplicata{ Point{prot}; }
+};
+prot2 = out[0]; // Rotated joint location
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, Pi + upper_swash_angle);
+
+// 90 degrees
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
+Duplicata { Volume{vconn3}; }
+};
+vconn5 = out[0];
+
+// Figure out the rotated point
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
+Duplicata{ Point{prot}; }
+};
+prot3 = out[0]; // Rotated joint location
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, Pi/2.0 + upper_swash_angle);
+
+// 270 degrees
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
+Duplicata { Volume{vconn3}; }
+};
+vconn6 = out[0];
+
+// Figure out the rotated point
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
+Duplicata{ Point{prot}; }
+};
+prot3 = out[0]; // Rotated joint location
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, -Pi/2.0 + upper_swash_angle);
+
+
+// Unite all volumes into one
+vplate = newv;
+BooleanUnion(vplate) = { Volume{vnew}; Delete;}{ Volume{vconn4}; Delete;};
+
+vplate1 = newv;
+BooleanUnion(vplate1) = { Volume{vplate}; Delete;}{ Volume{vconn5}; Delete;};
+
+vplate2 = newv;
+BooleanUnion(vplate2) = { Volume{vplate1}; Delete;}{ Volume{vconn6}; Delete;};
+
+// create a new sphere to cut
+X_sphere =  x_sphere;
+Y_sphere =  y_sphere;
+Z_sphere =  z_sphere;
+vsp = newv;
+Sphere(vsp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
+
+vupperswash = newv;
+BooleanDifference(vupperswash) = { Volume{vplate2}; Delete; }{ Volume{vsp}; Delete; };
+Printf("Created upper swash volume (%g)", vupperswash);
 Return
 //

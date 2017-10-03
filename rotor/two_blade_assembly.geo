@@ -63,7 +63,7 @@ Call CreateLowerSwashPlate;
 //                    UPPER SWASH PLATE
 //-------------------------------------------------------------------//
 
-Call CreateUpperSwashPlate;
+Call CreateDoubleUpperSwashPlate;
 
 //-------------------------------------------------------------------//
 //                    ROTOR BLADE
