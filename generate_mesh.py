@@ -49,7 +49,7 @@ def getGmshOptions(tag_type):
     '''
     These are the options that we use for our purposes in TACS
     '''
-    gmsh_string = "Mesh.ElementOrder=2; Mesh.Algorithm=6; Mesh.Smoothing=5; Mesh.RecombinationAlgorithm=0; Mesh.SubdivisionAlgorithm=1; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
+    gmsh_string = "Mesh.CharacteristicLengthExtendFromBoundary = 1; Mesh.CharacteristicLengthFactor = 0.5; Mesh.CharacteristicLengthMin = 0; Mesh.CharacteristicLengthMax = 1.0; Mesh.CharacteristicLengthFromCurvature = 0; Mesh.CharacteristicLengthFromPoints = 1; Mesh.Optimize = 1; Mesh.SubdivisionAlgorithm = 1; Mesh.RecombinationAlgorithm = 1; Mesh.RecombineAll = 1; Mesh.RemeshAlgorithm = 0; Mesh.RemeshParametrization = 0; Mesh.RefineSteps = 10; Mesh.ElementOrder=2; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
     return gmsh_string
 
 def remove_duplicates(x):
@@ -234,7 +234,7 @@ print "Mesh file     : ", mesh_file
 physical_surface = 0
 
 # Execute gmsh with the geo file with tag 
-call(["gmsh", "-2", geometry_file, " -o ", mesh_file, " -string ", getGmshOptions(1)])
+call(["gmsh", geometry_file, "-o", mesh_file, "-string", getGmshOptions(1), "-2"])
 
 # Read the contents of the generated BDF file from GMSH. We read the
 # BDF file to identify the nodes to which the BCs need to be applied
@@ -248,9 +248,9 @@ num_components = len(cids)
 print "Number of components : ", len(cids)
 
 # Execute gmsh with the new geo file containing physical surfaces
-tmp_geo_file = geometry_file + '.tmp'
-writeRenumberedComponents(tmp_geo_file, cids)
-call(["gmsh", "-2", tmp_geo_file, " -o ", mesh_file, " -string ", getGmshOptions(2)])
+#tmp_geo_file = geometry_file + '.tmp'
+#writeRenumberedComponents(tmp_geo_file, cids)
+#call(["gmsh", tmp_geo_file, "-o", mesh_file, "-string", getGmshOptions(2), "-2"])
 
 ## # The user might already know the node ids that are subject to
 ## # boundary conditions

@@ -549,7 +549,7 @@ Surface{s};
 srotated = out[0];
 
 // Extrude the surface to create a volume
-out[] = Extrude {R, 0, 0} { Surface{srotated}; Layers{(R-r_cutout)/cl }; };
+out[] = Extrude {R-r_cutout, 0, 0} { Surface{srotated}; Layers{(R-r_cutout)/cl }; };
 vblade = out[1];
 sbc = out[0];
 

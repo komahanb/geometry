@@ -14,6 +14,15 @@ parser.add_argument('--boundary_components', type=str, default=None, help='The c
 parser.add_argument('--boundary_nodes', type=str, default=None, help='The node numbers to write as SPC entries')
 args = parser.parse_args()
 
+class MyString:
+    def __init__(self, string):
+        self.string = string
+    def __div__(self, div):
+        l = []
+        for i in range(0, len(self.string), div):
+            l.append(self.string[i:i+div])
+        return l
+    
 def strtolist(mStr):
     if mStr is None:
         return []
@@ -127,11 +136,18 @@ def getNodesForComponentID(comp_id):
             skip = True
         
         elif skip:
-            # Append the BC node indices to the list
-            node_ids.append(int(entry[1]))
-            node_ids.append(int(entry[2]))
-            node_ids.append(int(entry[3]))
-            
+
+            if len(entry) == 4:
+                # Append the BC node indices to the list
+                node_ids.append(int(entry[1]))
+                node_ids.append(int(entry[2]))
+                node_ids.append(int(entry[3]))
+            else:
+                # Append the BC node indices to the list
+                node_ids.append(int(entry[0][8:]))
+                node_ids.append(int(entry[1]))
+                node_ids.append(int(entry[2]))
+                
             # Now turn off the continuations
             skip = False
 
@@ -296,6 +312,3 @@ if len(bc_nodes) != 0:
     bc_file = bdf_file + '.nodes' + '.bc'
     print "BCs written out as " + bc_file
     writeBCForNodes(bc_file, bc_nodes)
-    
-
-    

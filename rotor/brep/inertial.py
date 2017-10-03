@@ -9,7 +9,7 @@ import FreeCAD
 import Part
 
 # Problem parameters
-Density = 2500.0
+Density = 7200.0
 Omega = 109.12
 Grav = -9.81
 vz = 0.0
@@ -52,7 +52,7 @@ def writeProps(brep, name):
             Jmat[i] = JTMP[i]
 
     # Assert the equivalence of xcg and c/volume
-    assert(np.allclose(np.array(xcm), np.array(c)/solid.Volume) , 1)
+    assert((np.allclose(np.array(xcm), np.array(c)/solid.Volume)), 1)
             
     fp = open(key + '.dat', 'w')   
     fp.write('name %s\n' % name)
@@ -85,15 +85,14 @@ writeProps("lpl210.brep", "LowerPitchLinkAt210Deg")
 writeProps("upl30.brep", "UpperPitchLinkAt30Deg")
 writeProps("upl210.brep", "UpperPitchLinkAt210Deg")
 writeProps("usp.brep", "UpperSwashPlate")
+writeProps("sphere.brep", "Sphere")
 
 # Write all the non rotating parts
 Omega=0.0
 writeProps("bsp.brep", "BasePlate")
 
 # Components with initial velocity in z-direction
-vz = 0.5
-
-writeProps("sphere.brep", "Sphere")
+vz = 0.0
 writeProps("lph.brep", "LowerPushHorn")
 writeProps("uph.brep", "UpperPushHorn")
 writeProps("lsp.brep", "LowerSwashPlate")

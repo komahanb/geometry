@@ -15,12 +15,12 @@ x_end   =   chord/4.0;
 thickness_chord= 0.12;
 thickness = thickness_chord*chord;
 
-char_len = thickness;
+char_len = 1.0;
 
-Point(1) = { x_start , y_end   ,0, char_len};
-Point(2) = { x_end   , y_end   ,0, char_len};
-Point(3) = { x_end   , y_start ,0, char_len};
-Point(4) = { x_start , y_start ,0, char_len};
+Point(1) = { x_start , y_end   ,0.9, char_len};
+Point(2) = { x_end   , y_end   ,0.9, char_len};
+Point(3) = { x_end   , y_start ,0.9, char_len};
+Point(4) = { x_start , y_start ,0.9, char_len};
 
 Line(1) = {1, 2};
 Line(2) = {2, 3};
@@ -61,6 +61,14 @@ Physical Surface("top") = surfaceVector[4];
 Physical Surface("left") = surfaceVector[5];
 Physical Surface("back") = {1};
 
+
+out[] = Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
+Volume{surfaceVector[1]};
+};
+v= out[0];
+
+Printf("Boundary surface: %g", surfaceVector[0]);
+
 // surfaceVector2[] = Extrude {0, 0, 10.0*thickness} {
 // Surface{surfaceVector[1]};
 // Layers{1};
@@ -72,3 +80,23 @@ Physical Surface("back") = {1};
 // Physical Surface("right2") = surfaceVector2[3];
 // Physical Surface("top2") = surfaceVector2[4];
 // Physical Surface("left2") = surfaceVector2[5];
+
+// Specify mesh characteristics
+Mesh.CharacteristicLengthExtendFromBoundary = 1; 
+Mesh.CharacteristicLengthFactor = 0.2; 
+Mesh.CharacteristicLengthMin = 0; 
+Mesh.CharacteristicLengthMax = 1.0; 
+Mesh.CharacteristicLengthFromCurvature = 0; 
+Mesh.CharacteristicLengthFromPoints = 1; 
+Mesh.Optimize = 1; 
+Mesh.SubdivisionAlgorithm = 1; 
+Mesh.RecombinationAlgorithm = 1; 
+Mesh.RecombineAll = 1; 
+Mesh.RemeshAlgorithm = 0; 
+Mesh.RemeshParametrization = 0; 
+Mesh.RefineSteps = 10; 
+Mesh.Smoothing = 5;
+Mesh.ElementOrder=2; 
+Mesh.BdfFieldFormat=2; 
+Mesh.Format=31; 
+Mesh.SaveElementTagType=1;
