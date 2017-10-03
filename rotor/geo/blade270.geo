@@ -7,7 +7,7 @@ Include "../naca.geo";
 Include "../CreateComponents.geo";
 
 // Create geometry
-Call CreateBladeNegativeY;
+//Call CreateBladeNegativeY;
 
 Merge "brep/blade270.brep";
 
