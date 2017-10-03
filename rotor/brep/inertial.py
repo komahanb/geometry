@@ -64,7 +64,7 @@ def writeProps(brep, name):
     fp.write('vel %s %s %s\n' % (0.0,0.0,vz))
     fp.write('omega %s %s %s\n' % (0.0,0.0,Omega))
     fp.write('grav %s %s %s\n' % (0.0,0.0,Grav))
-    fp.write('mesh %s %s\n' % (key+'.bdf',mesh_type))
+    fp.write('mesh %s %s %s\n' % (key+'.bdf',mesh_type,'None'))
     fp.close()
 
 #print "orientation=", shape.Orientation
@@ -76,9 +76,13 @@ def writeProps(brep, name):
 
 # Write all the rotating parts
 writeProps("bcap0.brep", "BladeCapAt0Deg")
+writeProps("bcap90.brep", "BladeCapAt90Deg")
 writeProps("bcap180.brep", "BladeCapAt180Deg")
+writeProps("bcap270.brep", "BladeCapAt270Deg")
 writeProps("blade0.brep", "BladeAt0Deg")
+writeProps("blade90.brep", "BladeAt90Deg")
 writeProps("blade180.brep", "BladeAt180Deg")
+writeProps("blade270.brep", "BladeAt270Deg")
 writeProps("hub2b.brep", "Hub2Bladed")
 writeProps("hub4b.brep", "Hub4Bladed")
 writeProps("lpl30.brep", "LowerPitchLinkAt30Deg")

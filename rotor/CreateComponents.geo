@@ -1266,9 +1266,6 @@ BooleanUnion(vlink) = { Volume{vlinktmp}; Delete;}{ Volume{vspheretmp}; Delete;}
 v = newv;
 BooleanUnion(v) = { Volume{vtot}; Delete;}{ Volume{vlink}; Delete;};
 
-//v = Fillet{v}{11, 18, 25, 23, 7, 5, 6, 21, 19, 20, 12, 17, 22, 9, 16, 14, 8, 10}{0.0025};
-//Printf("newvol %g", v);
-
 //-------------------------------------------------------------------//
 //                   MAIN CYLINDRICAL PLATE
 //-------------------------------------------------------------------//
@@ -1302,7 +1299,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, upper_swash_angle} {
 Point{pspherecap};
 };
 prot = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot}, upper_swash_angle);
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot}, upper_swash_angle*180.0/Pi);
 
 // 180 degrees
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
@@ -1315,7 +1312,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 Duplicata{ Point{prot}; }
 };
 prot2 = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, Pi + upper_swash_angle);
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, (Pi + upper_swash_angle)*180.0/Pi);
 
 // 90 degrees
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
@@ -1328,7 +1325,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
 Duplicata{ Point{prot}; }
 };
 prot3 = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, Pi/2.0 + upper_swash_angle);
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot3}, (Pi/2.0 + upper_swash_angle)*180.0/Pi);
 
 // 270 degrees
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
@@ -1341,7 +1338,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
 Duplicata{ Point{prot}; }
 };
 prot3 = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, -Pi/2.0 + upper_swash_angle);
+Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot3}, (3.0*Pi/2.0 + upper_swash_angle)*180.0/Pi);
 
 
 // Unite all volumes into one
