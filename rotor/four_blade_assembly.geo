@@ -96,7 +96,7 @@ vlowerpitch0 = NewVolume;
 Call CreateUpperPitchLink;
 vupperpitch0 = NewVolume;
 
-// Rotate the links for the other blade
+// Rotate the links for +- X blades
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 Duplicata{Volume{vlowerpitch0};}
 };
@@ -106,3 +106,24 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 Duplicata{Volume{vupperpitch0};}
 };
 vupperpitch180 = out[0];
+
+// Rotate the links for +- Y blades
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
+Duplicata{Volume{vlowerpitch0};}
+};
+vlowerpitch90 = out[0];
+
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
+Duplicata{Volume{vupperpitch0};}
+};
+vupperpitch90 = out[0];
+
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
+Duplicata{Volume{vlowerpitch0};}
+};
+vlowerpitch270 = out[0];
+
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
+Duplicata{Volume{vupperpitch0};}
+};
+vupperpitch270 = out[0];
