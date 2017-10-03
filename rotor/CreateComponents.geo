@@ -597,6 +597,97 @@ vrotated = out[0];
 NewVolume = vrotated;
 Return
 //
+Function CreateBladeCapY
+Call CreateBladeCapX;
+vbladex = NewVolume;
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
+Volume{vbladex};
+};
+vrotated = out[0];
+NewVolume = vrotated;
+Return
+//
+Function CreateBladeCapNegativeY
+Call CreateBladeCapX;
+vbladex = NewVolume;
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
+Volume{vbladex};
+};
+vrotated = out[0];
+NewVolume = vrotated;
+Return
+//
+Function CreateFourBladeHub
+// Shaft cylinder
+vshaft = newv;
+dz = shaft_height - hub_height;
+Cylinder(vshaft) = {x_hub, y_hub, z_hub, 
+                 0, 0, dz, shaft_radius, 2*Pi};
+Printf("Created shaft volume (%g)", vshaft);
+
+// Constraint point between hub shaft and origin
+P_HUB_ORIG = newp;
+Point(P_HUB_ORIG) = {x_hub, y_hub, z_hub};
+Printf("P_HUB_ORIG %.16f %.16f %.16f ", Point{P_HUB_ORIG});
+
+// Hub cylinder
+vhub = newv;
+Cylinder(vhub) = {x_hub, y_hub, z_hub + dz, 
+               0, 0, hub_height, hub_radius, 2*Pi};
+Printf("Created hub volume (%g)", vhub);
+
+// 
+vtot = newv;
+BooleanUnion(vtot) = { Volume{vshaft}; Delete; }{ Volume{vhub}; Delete; };
+Printf("Combined shaft and hub volume (%g)", vtot);
+////////////////////////////////////////////////////////////////////////
+
+//--------------------------------------------------------------------//
+// Create a hub connector body on right along X
+//--------------------------------------------------------------------//
+
+dx = hub_conn_length + hub_radius;
+
+xhconn = x_hub - dx;
+yhconn = y_hub;
+zhconn = z_hub + shaft_height - hub_height/2.0;
+
+vhubconntmp = newv;
+Cylinder(vhubconntmp) = {xhconn, yhconn, zhconn, 2.0*dx, 0, 0, hub_conn_radius, 2*Pi};
+
+vfinal = newv;
+BooleanUnion(vfinal) = { Volume{vtot}; Delete; }{ Volume{vhubconntmp}; Delete; };
+
+P_HUB_UPL30 = newp;
+Point(P_HUB_UPL30) = {hub_radius + hub_conn_length, yhconn, zhconn};
+Printf("P_HUB_UPL30 %.16f %.16f %.16f ", Point{P_HUB_UPL30});
+
+P_HUB_UPL210 = newp;
+Point(P_HUB_UPL210) = {-(hub_radius + hub_conn_length), yhconn, zhconn};
+Printf("P_HUB_UPL210 %.16f %.16f %.16f ", Point{P_HUB_UPL210});
+//
+dy = hub_conn_length + hub_radius;
+
+xhconn = x_hub;
+yhconn = y_hub - dy;
+zhconn = z_hub + shaft_height - hub_height/2.0;
+
+vhubconntmp = newv;
+Cylinder(vhubconntmp) = {xhconn, yhconn, zhconn, 0, 2.0*dy, 0, hub_conn_radius, 2*Pi};
+
+vfinal1 = newv;
+BooleanUnion(vfinal1) = { Volume{vfinal}; Delete; }{ Volume{vhubconntmp}; Delete; };
+
+P_HUB_UPL120 = newp;
+Point(P_HUB_UPL120) = {xhconn, hub_radius + hub_conn_length, zhconn};
+Printf("P_HUB_UPL120 %.16f %.16f %.16f ", Point{P_HUB_UPL120});
+
+P_HUB_UPL300 = newp;
+Point(P_HUB_UPL300) = {xhconn, -(hub_radius + hub_conn_length), zhconn};
+Printf("P_HUB_UPL300 %.16f %.16f %.16f ", Point{P_HUB_UPL300});
+//
+Return
+//
 Function CreateDoubleBladeHub
 // Shaft cylinder
 vshaft = newv;
@@ -652,6 +743,27 @@ Function CreateBladeNegativeX
 Call CreateBladeX;
 vbladex = NewVolume;
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+Volume{vbladex};
+};
+vrotated = out[0];
+NewVolume = vrotated;
+Return
+//
+//
+Function CreateBladeNegativeY
+Call CreateBladeX;
+vbladex = NewVolume;
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
+Volume{vbladex};
+};
+vrotated = out[0];
+NewVolume = vrotated;
+Return
+//
+Function CreateBladeY
+Call CreateBladeX;
+vbladex = NewVolume;
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
 Volume{vbladex};
 };
 vrotated = out[0];

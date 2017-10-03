@@ -45,7 +45,7 @@ Call CreateBasePlate;
 //                         HUB
 //-------------------------------------------------------------------//
 
-Call CreateDoubleBladeHub;
+Call CreateFourBladeHub;
 
 //-------------------------------------------------------------------//
 //                         SPHERE
