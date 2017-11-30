@@ -7,9 +7,9 @@ Include "../naca.geo";
 Include "../CreateComponents.geo";
 
 // Create geometry
-//Call CreateBladeNegativeX;
+Call CreateBladeNegativeX;
 
-Merge "brep/blade180.brep";
+//Merge "brep/blade180.brep";
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 

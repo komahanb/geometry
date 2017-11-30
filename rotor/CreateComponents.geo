@@ -532,7 +532,7 @@ NACA4_th     = 12 ;
 NACA4_ch     = 0.121 ;
 NACA4_le_x   = -0.121/2.0; // Span/2*Sin(Sweep) ;
 NACA4_le_y   = 0.0 ; // actually z
-NACA4_le_z   = r_cutout ; // actually y
+NACA4_le_z   = R; // r_cutout ; // actually y
 
 // Create the airfoil 
 Call NACA4 ;
@@ -549,7 +549,7 @@ Surface{s};
 srotated = out[0];
 
 // Extrude the surface to create a volume
-out[] = Extrude {R-r_cutout, 0, 0} { Surface{srotated}; Layers{(R-r_cutout)/cl }; };
+out[] = Extrude {r_cutout-R, 0, 0} { Surface{srotated}; Layers{(R-r_cutout)/cl }; };
 vblade = out[1];
 sbc = out[0];
 
@@ -568,6 +568,12 @@ Printf("Boundary surface is %g", sbc);
 // Physical Surface("bottom_hub_surface", newp) = sbc;
 //Physical Surface("lateral_surface", 4) = {out[2], out[3], out[4], out[5]};
 NewVolume = vblade;
+vbladex = NewVolume;
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, 2.0*Pi} {
+Volume{vblade};
+};
+vrotated = out[0];
+NewVolume = vrotated;
 Return
 //
 Function CreateBladeCapX
