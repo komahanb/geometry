@@ -1,10 +1,10 @@
 // Root cutout radius of blade
-cutout_radius = DefineNumber[ 0.44, Name "Parameters/cutout_radius" ];
+cutout_radius = DefineNumber[ 0.24, Name "Parameters/cutout_radius" ];
 
 // Radii of bodies normalized with respect to shaft_radius
 
 // Heights of bodies normalized with respect to shaft height
-shaft_height       = DefineNumber[ 1.00             , Name "Parameters/shaft_height" ];
+shaft_height       = DefineNumber[ 0.50             , Name "Parameters/shaft_height" ];
 sphere_radius      = DefineNumber[ 0.2*shaft_height , Name "Parameters/sphere_radius" ];
 base_height        = DefineNumber[ 0.1*shaft_height , Name "Parameters/base_height" ];
 hub_height         = DefineNumber[ 0.2*shaft_height , Name "Parameters/hub_height" ];
