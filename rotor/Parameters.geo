@@ -6,13 +6,13 @@ xtrans = DefineNumber[ 0.7652 , Name "Parameters/xtrans" ];
 ytrans = DefineNumber[ 0.0000 , Name "Parameters/ytrans" ];
 ztrans = DefineNumber[ 0.7960 , Name "Parameters/ztrans" ];
 
-sphere_radius      = DefineNumber[ 0.2*shaft_height , Name "Parameters/sphere_radius" ];
-
 // Heights of bodies normalized with respect to shaft height
 shaft_height       = DefineNumber[ 0.50             , Name "Parameters/shaft_height" ];
 sphere_radius      = DefineNumber[ 0.2*shaft_height , Name "Parameters/sphere_radius" ];
 base_height        = DefineNumber[ 0.1*shaft_height , Name "Parameters/base_height" ];
 hub_height         = DefineNumber[ 0.2*shaft_height , Name "Parameters/hub_height" ];
+
+sphere_radius      = DefineNumber[ 0.2*shaft_height , Name "Parameters/sphere_radius" ];
 
 upper_swash_radius = DefineNumber[ 1.4*sphere_radius , Name "Parameters/upper_swash_radius" ];
 lower_swash_radius = DefineNumber[ 1.2*sphere_radius , Name "Parameters/lower_swash_radius" ];

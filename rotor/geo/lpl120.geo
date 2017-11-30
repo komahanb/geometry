@@ -10,10 +10,14 @@ Include "../CreateComponents.geo";
 aoffset = 0;
 theta = upper_swash_angle;
 Call CreateLowerPitchLink;
-vlowerpitch0 = NewVolume;
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
+
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi/2.0} {
 Volume{vlowerpitch0};
 };
+vlowerpitch120 = out[0];
+
+// Translate the blade to offset
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlowerpitch120}; };
 vlowerpitch120 = out[0];
 
 // Specify mesh characteristics

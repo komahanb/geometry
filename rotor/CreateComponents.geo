@@ -246,7 +246,7 @@ Sphere(vsp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
 vlowerswash = newv;
 BooleanDifference(vlowerswash) = { Volume{vplate}; Delete; }{ Volume{vsp}; Delete; };
 Printf("Created lower swash volume (%g)", vlowerswash);
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlowerswash}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlowerswash}; };
 vlowerswash = out[0];
 Return
 //
@@ -291,7 +291,7 @@ Printf("Baseplate volume is (%g)", NewVolume);
 aoffset = 0.0;
 baseplate_vnum = NewVolume;
 Call CutBlockFromBasePlate;
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vbaseplate}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vbaseplate}; };
 vbaseplate = out[0];
 Return
 //
@@ -363,7 +363,7 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 //Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 //v = newv;
 //BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; };
 v = out[0];
 Return
 //
@@ -433,7 +433,7 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 //Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 //v = newv;
 //BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; };
 v = out[0];
 Return
 //
@@ -503,7 +503,7 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 //Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 //v = newv;
 //BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; };
 v = out[0];
 Return
 //
@@ -581,7 +581,7 @@ Volume{vblade};
 };
 vblade = out[0];
 // Translate the blade to offset
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vblade}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vblade}; };
 vblade = out[0];
 Return
 //
@@ -600,7 +600,7 @@ dz = 0;
 vbladecap = newv;
 Cylinder(vbladecap) = {xbconn, ybconn, zbconn, dx, dy, dz, blade_conn_radius, 2*Pi};
 // Translate the blade to offset
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vbladecap}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vbladecap}; };
 vbladecap = out[0];
 Return
 //
@@ -695,7 +695,7 @@ P_HUB_UPL300 = newp;
 Point(P_HUB_UPL300) = {xhconn, -(hub_radius + hub_conn_length), zhconn};
 Printf("P_HUB_UPL300 %.16f %.16f %.16f ", Point{P_HUB_UPL300});
 //
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vhub}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vhub}; };
 vhub = out[0];
 Return
 //
@@ -895,7 +895,7 @@ NewPoint = phinge;
 Printf("LPH head center coordinates %f %f %f", Point{phinge});
 Delete{ Point{phinge};}
 
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlph}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlph}; };
 vlph = out[0];
 
 Return
@@ -1017,7 +1017,7 @@ NewPoint = phinge;
 Printf("UPH tail center coordinates %f %f %f", Point{phinge});
 Delete{ Point{phinge};}
 //
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vuph}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vuph}; };
 vuph = out[0];
 Return
 //
@@ -1208,7 +1208,7 @@ Printf("Created shaft volume (%g)");
 vtot = newv;
 BooleanDifference(vtot) = { Volume{vsphere}; Delete; }{ Volume{vshaft}; Delete; };
 vsphere = vtot;
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vsphere}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vsphere}; };
 vsphere = out[0];
 Return
 //
@@ -1372,7 +1372,7 @@ Sphere(vsp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
 vupperswash = newv;
 BooleanDifference(vupperswash) = { Volume{vplate2}; Delete; }{ Volume{vsp}; Delete; };
 Printf("Created upper swash volume (%g)", vupperswash);
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vupperswash}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vupperswash}; };
 vupperswash = out[0];
 Return
 //

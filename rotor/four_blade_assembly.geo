@@ -90,12 +90,12 @@ Call CreateBladeCapNegativeY;
 theta = upper_swash_angle;
 Call CreateLowerPitchLink;
 // Translate the blade to offset
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlowerpitch0}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlowerpitch0}; };
 vlowerpitch0 = out[0];
 
 Call CreateUpperPitchLink;
 // Translate the blade to offset
-out[] = Translate {xtrans, ytrans, ztrans} { Volume{vupperpitch0}; }
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vupperpitch0}; };
 vupperpitch0 = out[0];
 
 // Rotate the links for +- X blades

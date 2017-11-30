@@ -10,10 +10,13 @@ Include "../CreateComponents.geo";
 aoffset = 0;
 theta = upper_swash_angle;
 Call CreateUpperPitchLink;
-vupperpitch0 = NewVolume;
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
 Volume{vupperpitch0};
 };
+vupperpitch120 = out[0];
+
+// Translate the blade to offset
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vupperpitch120}; };
 vupperpitch120 = out[0];
 
 // Specify mesh characteristics
