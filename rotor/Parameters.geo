@@ -1,7 +1,12 @@
 // Root cutout radius of blade
 cutout_radius = DefineNumber[ 0.24, Name "Parameters/cutout_radius" ];
 
-// Radii of bodies normalized with respect to shaft_radius
+// Finally translate the objects to this origin
+xtrans = DefineNumber[ 0.7652 , Name "Parameters/xtrans" ];
+ytrans = DefineNumber[ 0.0000 , Name "Parameters/ytrans" ];
+ztrans = DefineNumber[ 0.7960 , Name "Parameters/ztrans" ];
+
+sphere_radius      = DefineNumber[ 0.2*shaft_height , Name "Parameters/sphere_radius" ];
 
 // Heights of bodies normalized with respect to shaft height
 shaft_height       = DefineNumber[ 0.50             , Name "Parameters/shaft_height" ];
