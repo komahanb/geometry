@@ -226,11 +226,9 @@ vlink = newv;
 BooleanUnion(vlink) = { Volume{vlinktmp}; Delete; }{ Volume{vlinkcap}; Delete; };
 
 // Add the link to the existing volume
-v = newv;
-BooleanUnion(v) = { Volume{baseplate_vnum}; Delete; }{ Volume{vlink}; Delete; };
-
-Newvolume = v;
-
+vbaseplate = newv;
+BooleanUnion(vbaseplate) = { Volume{baseplate_vnum}; Delete; }{ Volume{vlink}; Delete; };
+Printf("Cutblock Baseplate volume is (%g)", vbaseplate);
 Return
 //
 Function PushRodX

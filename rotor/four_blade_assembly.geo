@@ -9,6 +9,10 @@ Include "Functions.geo";
 Include "naca.geo";
 Include "CreateComponents.geo";
 
+xtrans = 1.7652;
+ytrans = 1.0000;
+ztrans = 1.7960;
+
 //--------------------------------------------------------------------//
 //------------------      PUSHRODS   ---------------------------------//
 //--------------------------------------------------------------------//
@@ -26,14 +30,12 @@ xloc = base_radius*Cos(aoffset) - link_length/2.0;
 yloc = base_radius*Sin(aoffset) ;
 zloc = z_base + base_height/2.0;
 Call CreateLowerPushHorn;
-vlph = NewVolume;
 
 aoffset = 0;
 xloc = xloc;
 yloc = yloc;
 zloc = z_lower_swash+ lower_swash_height/2.0;
 Call CreateUpperPushHorn;
-vuph = NewVolume;
 
 //-------------------------------------------------------------------//
 //------------------------ BASEPLATE --------------------------------//
@@ -91,39 +93,43 @@ Call CreateBladeCapNegativeY;
 
 theta = upper_swash_angle;
 Call CreateLowerPitchLink;
-vlowerpitch0 = NewVolume;
+// Translate the blade to offset
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlowerpitch0}; }
+vlowerpitch0 = out[0];
 
 Call CreateUpperPitchLink;
-vupperpitch0 = NewVolume;
+// Translate the blade to offset
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vupperpitch0}; }
+vupperpitch0 = out[0];
 
 // Rotate the links for +- X blades
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi} {
 Duplicata{Volume{vlowerpitch0};}
 };
 vlowerpitch180 = out[0];
 
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi} {
 Duplicata{Volume{vupperpitch0};}
 };
 vupperpitch180 = out[0];
 
 // Rotate the links for +- Y blades
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi/2.0} {
 Duplicata{Volume{vlowerpitch0};}
 };
 vlowerpitch90 = out[0];
 
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi/2.0} {
 Duplicata{Volume{vupperpitch0};}
 };
 vupperpitch90 = out[0];
 
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, -Pi/2.0} {
 Duplicata{Volume{vlowerpitch0};}
 };
 vlowerpitch270 = out[0];
 
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, -Pi/2.0} {
 Duplicata{Volume{vupperpitch0};}
 };
 vupperpitch270 = out[0];

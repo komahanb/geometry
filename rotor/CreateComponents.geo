@@ -246,6 +246,8 @@ Sphere(vsp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
 vlowerswash = newv;
 BooleanDifference(vlowerswash) = { Volume{vplate}; Delete; }{ Volume{vsp}; Delete; };
 Printf("Created lower swash volume (%g)", vlowerswash);
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlowerswash}; }
+vlowerswash = out[0];
 Return
 //
 Function CreateBasePlate
@@ -289,7 +291,8 @@ Printf("Baseplate volume is (%g)", NewVolume);
 aoffset = 0.0;
 baseplate_vnum = NewVolume;
 Call CutBlockFromBasePlate;
-Printf("Cutblock Baseplate volume is (%g)", NewVolume);
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vbaseplate}; }
+vbaseplate = out[0];
 Return
 //
 Function CreatePushRod90
@@ -360,6 +363,8 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 //Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 //v = newv;
 //BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; }
+v = out[0];
 Return
 //
 Function CreatePushRod180
@@ -428,6 +433,8 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 //Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 //v = newv;
 //BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; }
+v = out[0];
 Return
 //
 Function CreatePushRod270
@@ -496,6 +503,8 @@ BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vspheretmp}; Delete; };
 //Printf("Punched cylindrical hole in pushrod = %g", vcyltmp);
 //v = newv;
 //BooleanDifference(v) = { Volume{vtot}; Delete; }{ Volume{vcyltmp}; Delete; };
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{v}; }
+v = out[0];
 Return
 //
 Function CreateBladeX
@@ -567,13 +576,13 @@ Printf("Boundary surface is %g", sbc);
 // Looking from TOP at XY plane according to gmsh convention
 // Physical Surface("bottom_hub_surface", newp) = sbc;
 //Physical Surface("lateral_surface", 4) = {out[2], out[3], out[4], out[5]};
-NewVolume = vblade;
-vbladex = NewVolume;
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, 2.0*Pi} {
 Volume{vblade};
 };
-vrotated = out[0];
-NewVolume = vrotated;
+vblade = out[0];
+// Translate the blade to offset
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vblade}; }
+vblade = out[0];
 Return
 //
 Function CreateBladeCapX
@@ -588,39 +597,32 @@ dx = -blade_conn_length*Cos(0);
 dy = -blade_conn_length*Sin(0);
 dz = 0;
 
-vbladeconn = newv;
-Cylinder(vbladeconn) = {xbconn, ybconn, zbconn, dx, dy, dz, blade_conn_radius, 2*Pi};
-NewVolume = vbladeconn;
+vbladecap = newv;
+Cylinder(vbladecap) = {xbconn, ybconn, zbconn, dx, dy, dz, blade_conn_radius, 2*Pi};
+// Translate the blade to offset
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vbladecap}; }
+vbladecap = out[0];
 Return
 //
 Function CreateBladeCapNegativeX
 Call CreateBladeCapX;
-vbladex = NewVolume;
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
-Volume{vbladex};
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi} {
+Volume{vbladecap};
 };
-vrotated = out[0];
-NewVolume = vrotated;
 Return
 //
 Function CreateBladeCapY
 Call CreateBladeCapX;
-vbladex = NewVolume;
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
-Volume{vbladex};
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi/2.0} {
+Volume{vbladecap};
 };
-vrotated = out[0];
-NewVolume = vrotated;
 Return
 //
 Function CreateBladeCapNegativeY
 Call CreateBladeCapX;
-vbladex = NewVolume;
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
-Volume{vbladex};
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, -Pi/2.0} {
+Volume{vbladecap};
 };
-vrotated = out[0];
-NewVolume = vrotated;
 Return
 //
 Function CreateFourBladeHub
@@ -683,6 +685,7 @@ Cylinder(vhubconntmp) = {xhconn, yhconn, zhconn, 0, 2.0*dy, 0, hub_conn_radius, 
 
 vfinal1 = newv;
 BooleanUnion(vfinal1) = { Volume{vfinal}; Delete; }{ Volume{vhubconntmp}; Delete; };
+vhub = vfinal1;
 
 P_HUB_UPL120 = newp;
 Point(P_HUB_UPL120) = {xhconn, hub_radius + hub_conn_length, zhconn};
@@ -692,6 +695,8 @@ P_HUB_UPL300 = newp;
 Point(P_HUB_UPL300) = {xhconn, -(hub_radius + hub_conn_length), zhconn};
 Printf("P_HUB_UPL300 %.16f %.16f %.16f ", Point{P_HUB_UPL300});
 //
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vhub}; }
+vhub = out[0];
 Return
 //
 Function CreateDoubleBladeHub
@@ -734,6 +739,7 @@ Cylinder(vhubconntmp) = {xhconn, yhconn, zhconn, 2.0*dx, 0, 0, hub_conn_radius, 
 
 vfinal = newv;
 BooleanUnion(vfinal) = { Volume{vtot}; Delete; }{ Volume{vhubconntmp}; Delete; };
+vhub = vfinal1;
 
 P_HUB_UPL30 = newp;
 Point(P_HUB_UPL30) = {hub_radius + hub_conn_length, yhconn, zhconn};
@@ -747,33 +753,24 @@ Return
 //
 Function CreateBladeNegativeX
 Call CreateBladeX;
-vbladex = NewVolume;
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
-Volume{vbladex};
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi} {
+Volume{vblade};
 };
-vrotated = out[0];
-NewVolume = vrotated;
 Return
 //
 //
 Function CreateBladeNegativeY
 Call CreateBladeX;
-vbladex = NewVolume;
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
-Volume{vbladex};
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, -Pi/2.0} {
+Volume{vblade};
 };
-vrotated = out[0];
-NewVolume = vrotated;
 Return
 //
 Function CreateBladeY
 Call CreateBladeX;
-vbladex = NewVolume;
-out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
-Volume{vbladex};
+out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi/2.0} {
+Volume{vblade};
 };
-vrotated = out[0];
-NewVolume = vrotated;
 Return
 //
 Function CreateLowerPushHorn
@@ -885,7 +882,7 @@ out[] = Rotate {{0, 1, 0}, {xloc, yloc, zloc}, pushrod_angle} {
 Volume{vlowerpushhorn};
 };
 vfinal = out[0];
-NewVolume = vfinal;
+vlph = vfinal;
 
 // Lower hinge point
 p = newp;
@@ -897,6 +894,9 @@ phinge = out[0];
 NewPoint = phinge;
 Printf("LPH head center coordinates %f %f %f", Point{phinge});
 Delete{ Point{phinge};}
+
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vlph}; }
+vlph = out[0];
 
 Return
 //
@@ -1004,7 +1004,7 @@ out[] = Rotate {{0, 1, 0}, {xloc, yloc, zloc}, -pushrod_angle} {
 Volume{vfinal};
 };
 vfinal = out[0];
-NewVolume = vfinal;
+vuph = vfinal;
 
 // Upper hinge point
 p = newp;
@@ -1017,6 +1017,8 @@ NewPoint = phinge;
 Printf("UPH tail center coordinates %f %f %f", Point{phinge});
 Delete{ Point{phinge};}
 //
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vuph}; }
+vuph = out[0];
 Return
 //
 
@@ -1107,7 +1109,7 @@ vnew = newv;
 BooleanUnion(vnew) = { Volume{vtmp}; Delete;}{ Volume{vmale}; Delete;};
 
 // Add a bolt
-hcy   = 2*2*horn_base_radius;
+hcy   = 2.0*2.0*horn_base_radius;
 rcy   = horn_bolt_radius;
 ycy   = yloc;
 xcy   = xloc - 2.0*horn_base_radius;
@@ -1119,7 +1121,7 @@ Cylinder(vbolt) = {xcy, ycy, zcy, hcy, 0, 0, rcy, 2*Pi};
 // Unite the bolt with body
 vtot = newv;
 BooleanDifference(vtot) = { Volume{vnew}; Delete;}{ Volume{vbolt}; Delete;};
-NewVolume = vtot;
+vlowerpitch0 = vtot;
 Return
 //
 Function CreateUpperPitchLink
@@ -1184,7 +1186,7 @@ BooleanDifference(v2) = { Volume{vtot}; Delete; }{ Volume{vhbconn};};
 //
 v3 = newv;
 BooleanUnion(v3) = { Volume{v2}; Delete; }{ Volume{vhbconn}; Delete;};
-NewVolume = v3;
+vupperpitch0 = v3;
 Return
 //
 Function CreateSphere
@@ -1205,6 +1207,9 @@ Printf("Created shaft volume (%g)");
 
 vtot = newv;
 BooleanDifference(vtot) = { Volume{vsphere}; Delete; }{ Volume{vshaft}; Delete; };
+vsphere = vtot;
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vsphere}; }
+vsphere = out[0];
 Return
 //
 Function CreateFourUpperSwashPlate
@@ -1367,5 +1372,7 @@ Sphere(vsp) = {X_sphere, Y_sphere, Z_sphere, sphere_radius, -Pi/4, Pi/4, 2*Pi};
 vupperswash = newv;
 BooleanDifference(vupperswash) = { Volume{vplate2}; Delete; }{ Volume{vsp}; Delete; };
 Printf("Created upper swash volume (%g)", vupperswash);
+out[] = Translate {xtrans, ytrans, ztrans} { Volume{vupperswash}; }
+vupperswash = out[0];
 Return
 //
