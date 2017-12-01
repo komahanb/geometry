@@ -4,10 +4,11 @@ cutout_radius = DefineNumber[ 0.24, Name "Parameters/cutout_radius" ];
 // Finally translate the objects to this origin
 xtrans = DefineNumber[ 0.7652 , Name "Parameters/xtrans" ];
 ytrans = DefineNumber[ 0.0000 , Name "Parameters/ytrans" ];
-ztrans = DefineNumber[ 0.7960 , Name "Parameters/ztrans" ];
 
 // Heights of bodies normalized with respect to shaft height
-shaft_height       = DefineNumber[ 0.50             , Name "Parameters/shaft_height" ];
+shaft_height       = DefineNumber[ 0.4 , Name "Parameters/shaft_height" ];
+ztrans = DefineNumber[ 0.796 - 0.9*shaft_height , Name "Parameters/ztrans" ];
+
 sphere_radius      = DefineNumber[ 0.2*shaft_height , Name "Parameters/sphere_radius" ];
 base_height        = DefineNumber[ 0.1*shaft_height , Name "Parameters/base_height" ];
 hub_height         = DefineNumber[ 0.2*shaft_height , Name "Parameters/hub_height" ];
