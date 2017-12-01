@@ -11,7 +11,7 @@ aoffset = 0;
 theta = upper_swash_angle;
 Call CreateLowerPitchLink;
 
-out[] = Rotate {{0, 0, 1}, {xtrans, ytrans, ztrans}, Pi/2.0} {
+out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
 Volume{vlowerpitch0};
 };
 vlowerpitch120 = out[0];
