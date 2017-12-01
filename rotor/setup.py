@@ -171,7 +171,7 @@ class SolidProperties:
 ######################################################################   
 ######################################################################
 
-prefix = '/home/komahan/git/tacs-problems/scaled-assembly/'
+prefix = '/home/komahan/git/tacs-problems/hart-assembly/'
 
 if not os.path.exists(prefix):
     os.makedirs(prefix)

@@ -219,7 +219,7 @@ vlinkcap = newv;
 Cylinder(vlinkcap) = {
 xlink, ylink + link_length/2.0-pushrod_sphere_radius, zlink, 
 0,  2.0*pushrod_sphere_radius, 0, pushrod_sphere_radius, 2*Pi};
-Printf("bsp_lpl coordinates %g %g %g", xlink, ylink + link_length/2.0, zlink );
+Printf("P_BSP_LPL coordinates %g %g %g", xlink, ylink + link_length/2.0, zlink );
 
 // Add the cap to link
 vlink = newv;

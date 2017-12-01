@@ -70,11 +70,11 @@ BooleanUnion(v) = { Volume{vtot}; Delete;}{ Volume{vlink}; Delete;};
 
 vcyl = newv;
 Cylinder(vcyl) = {x_upper_swash, y_upper_swash, z_upper_swash, 0, 0, upper_swash_height, upper_swash_radius, 2*Pi};
-Printf("usp_sphere_coordinates: %f %f %f", 
+Printf("P_USP_SPHERE_coordinates: %f %f %f", 
                                 x_upper_swash, 
                                 y_upper_swash, 
                                 z_upper_swash+upper_swash_height/2.0);
-Printf("lsp_usp_coordinates: %f %f %f", 
+Printf("P_LSP_USP_coordinates: %f %f %f", 
                                 x_upper_swash, 
                                 y_upper_swash, 
                                 z_upper_swash);
@@ -102,7 +102,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, upper_swash_angle} {
 Point{pspherecap};
 };
 prot = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot}, upper_swash_angle);
+Printf("P_USP_LPL ball coordinates %f %f %f at %f rad", Point{prot}, upper_swash_angle);
 
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 Duplicata { Volume{vconn3}; }
@@ -114,7 +114,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 Duplicata{ Point{prot}; }
 };
 prot2 = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, Pi + upper_swash_angle);
+Printf("P_USP_LPL ball coordinates %f %f %f at %f rad", Point{prot2}, Pi + upper_swash_angle);
 
 // Unite all volumes into one
 vplate = newv;
@@ -1283,11 +1283,11 @@ BooleanUnion(v) = { Volume{vtot}; Delete;}{ Volume{vlink}; Delete;};
 
 vcyl = newv;
 Cylinder(vcyl) = {x_upper_swash, y_upper_swash, z_upper_swash, 0, 0, upper_swash_height, upper_swash_radius, 2*Pi};
-Printf("usp_sphere_coordinates: %f %f %f", 
+Printf("P_USP_SPHERE_coordinates: %f %f %f", 
                                 x_upper_swash, 
                                 y_upper_swash, 
                                 z_upper_swash+upper_swash_height/2.0);
-Printf("lsp_usp_coordinates: %f %f %f", 
+Printf("P_LSP_USP_coordinates: %f %f %f", 
                                 x_upper_swash, 
                                 y_upper_swash, 
                                 z_upper_swash);
@@ -1310,7 +1310,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, upper_swash_angle} {
 Point{pspherecap};
 };
 prot = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot}, upper_swash_angle*180.0/Pi);
+Printf("P_USP_LPL ball coordinates %f %f %f at %f rad", Point{prot}, upper_swash_angle*180.0/Pi);
 
 // 180 degrees
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
@@ -1323,7 +1323,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi} {
 Duplicata{ Point{prot}; }
 };
 prot2 = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot2}, (Pi + upper_swash_angle)*180.0/Pi);
+Printf("P_USP_LPL ball coordinates %f %f %f at %f rad", Point{prot2}, (Pi + upper_swash_angle)*180.0/Pi);
 
 // 90 degrees
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
@@ -1336,7 +1336,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, Pi/2.0} {
 Duplicata{ Point{prot}; }
 };
 prot3 = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot3}, (Pi/2.0 + upper_swash_angle)*180.0/Pi);
+Printf("P_USP_LPL ball coordinates %f %f %f at %f rad", Point{prot3}, (Pi/2.0 + upper_swash_angle)*180.0/Pi);
 
 // 270 degrees
 out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
@@ -1349,7 +1349,7 @@ out[] = Rotate {{0, 0, 1}, {xo, yo, zo}, -Pi/2.0} {
 Duplicata{ Point{prot}; }
 };
 prot3 = out[0]; // Rotated joint location
-Printf("usp_lpl ball coordinates %f %f %f at %f rad", Point{prot3}, (3.0*Pi/2.0 + upper_swash_angle)*180.0/Pi);
+Printf("P_USP_LPL ball coordinates %f %f %f at %f rad", Point{prot3}, (3.0*Pi/2.0 + upper_swash_angle)*180.0/Pi);
 
 
 // Unite all volumes into one
