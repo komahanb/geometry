@@ -65,6 +65,14 @@ class BREPGenerator(object):
 
 class BDFGenerator(object):
     @staticmethod
+    def getGmshOptions(tag_type):
+        '''
+        These are the options that we use for our purposes in TACS
+        '''
+        gmsh_string = "Mesh.Optimize = 1; Mesh.SubdivisionAlgorithm = 1; Mesh.RecombinationAlgorithm = 1; Mesh.RecombineAll = 1; Mesh.RemeshAlgorithm = 0; Mesh.RemeshParametrization = 0; Mesh.RefineSteps = 10; Mesh.ElementOrder=2; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
+        return gmsh_string
+
+    @staticmethod
     def generate(body):
         """
         Generate the BDF file by calling GMSH for the body supplied as
@@ -76,8 +84,13 @@ class BDFGenerator(object):
         # Store where the mesh is located into the body
         body.mesh_file = prefix + 'bdf/' + body.geo_file + '.bdf'
 
-        # Create mesh
-        call(["gmsh", geometry_file, "-2", "-o", body.mesh_file])
+        # Create mesh (this does not supply any body specific options
+        # defined in the .geo file)
+        call(["gmsh",
+              geometry_file,
+              "-2",
+              "-o", body.mesh_file,
+              "-string", BDFGenerator.getGmshOptions(1)])
         
         # remove cbar entries
         call(["sed", "-i", "/CBAR/d", body.mesh_file])
@@ -178,40 +191,52 @@ if not os.path.exists(prefix + "bdf"):
 # All the bodies to setup for simulation
 bodies = []
 bodies.append(Body("BladeCapAt0Deg"         , "bcap0"    , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("BladeCapAt90Deg"        , "bcap90"   , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("BladeCapAt180Deg"       , "bcap180"  , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("BladeCapAt270Deg"       , "bcap270"  , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("BladeAt0Deg"            , "blade0"   , True))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("BladeAt90Deg"           , "blade90"  , True))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("BladeAt180Deg"          , "blade180" , True))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("BladeAt270Deg"          , "blade270" , True))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("LowerPitchLinkAt30Deg"  , "lpl30"    , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("LowerPitchLinkAt120Deg" , "lpl120"   , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("LowerPitchLinkAt210Deg" , "lpl210"   , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("LowerPitchLinkAt300Deg" , "lpl300"   , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("UpperPitchLinkAt30Deg"  , "upl30"    , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("UpperPitchLinkAt120Deg" , "upl120"   , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("UpperPitchLinkAt210Deg" , "upl210"   , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("UpperPitchLinkAt300Deg" , "upl300"   , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("Hub4Bladed"             , "hub4b"    , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("UpperSwashPlate4Bladed" , "usp4b"    , False))
+bodies[-1].omega[2] = 109.12
 bodies.append(Body("Sphere"                 , "sphere"   , False))
+bodies[-1].omega[2] = 109.12
 
 # non rotating bodies
 bodies.append(Body("BasePlate"              , "bsp"      , False))
-bodies[-1].omega[2] = 109.12
 bodies.append(Body("LowerSwashPlate"        , "lsp"      , False))
-bodies[-1].omega[2] = 109.12
 bodies.append(Body("PushRodAt90Deg"         , "prod90"   , False))
-bodies[-1].omega[2] = 109.12
 bodies.append(Body("PushRodAt180Deg"        , "prod180"  , False))
-bodies[-1].omega[2] = 109.12
 bodies.append(Body("PushRodAt270Deg"        , "prod270"  , False))
-bodies[-1].omega[2] = 109.12
 bodies.append(Body("LowerPushHorn"          , "lph"      , False))
-bodies[-1].omega[2] = 109.12
 bodies.append(Body("UpperPushHorn"          , "uph"      , False))
-bodies[-1].omega[2] = 109.12
 
 # Generate BREP file for body
 for body in bodies:
