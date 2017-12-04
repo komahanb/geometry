@@ -2,7 +2,7 @@ Function Ellips
 xtmp = xbase;
 ytmp = ybase;
 ztmp = zbase;
-thick = 0.1*chord;
+thick = 0.2*chord;
 angle = 2*Pi;
 c = newc; 
 Ellipse(c) = {xtmp, ytmp, ztmp, chord, thick, 0.0, angle};
