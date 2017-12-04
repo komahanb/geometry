@@ -10,7 +10,7 @@ ll = newll;
 Line Loop(ll) = {c};
 s = news; 
 Plane Surface(s) = {ll};
-out[] = Extrude {0.0,0, length} { Surface{s}; };
+out[] = Extrude {dx, dy, dz} { Surface{s}; };
 NewVolume = out[1];
 Printf("created ellipsoid volume = %g", NewVolume);
 Return

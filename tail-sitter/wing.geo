@@ -7,8 +7,13 @@ SetFactory("OpenCASCADE");
 Include "Parameters.geo";
 Include "Addon.geo";
 
-length = wing_span;
-chord  = wing_chord;
+xbase = xwingbase;
+ybase = ywingbase;
+zbase = zwingbase;
+chord = wing_chord;
+dx = 0.0;
+dy = 0.0;
+dz = wing_span/2.0;
 
 // create right wing
 Call Ellips;

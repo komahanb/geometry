@@ -4,14 +4,19 @@ yref = 10.0;
 zref = 3.0;
 
 // Wing parameters
-xbase  = 0.3*xref;
-ybase  = 0.0;
-zbase  = 0.0;
+xwingbase  = 0.3*xref;
+ywingbase  = 0.0;
+zwingbase  = 0.0;
 wing_span = yref;
 wing_chord = 0.3*wing_span;
 
 // Fuselage paramters
 
 // Tail parameteres
+xtailbase = 0.5*xref;
+ytailbase = 0.0;
+ztailbase = 0.0;
+tail_span = wing_span/2.0;
+tail_chord = 0.25*tail_span;
 
 // Head parameters
