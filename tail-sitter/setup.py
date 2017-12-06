@@ -191,8 +191,27 @@ if not os.path.exists(prefix + "bdf"):
     
 # All the bodies to setup for simulation
 bodies = []
-bodies.append(Body("Fuselage"     , "body" , False))
-bodies.append(Body("HeadAssembly" , "head" , False))
+bodies.append(Body("Hub1", "hub1" , False))
+bodies.append(Body("Blade1Hub1"  , "bladeh11" , False))
+bodies[-1].omega[2] = -109.12
+bodies.append(Body("Blade2Hub1"  , "bladeh12" , False))
+bodies[-1].omega[2] = -109.12
+bodies.append(Body("Blade3Hub1"  , "bladeh13" , False))
+bodies[-1].omega[2] = -109.12
+bodies.append(Body("Blade4Hub1"  , "bladeh14" , False))
+bodies[-1].omega[2] = -109.12
+
+bodies.append(Body("Hub2", "hub2" , False))
+bodies.append(Body("Blade1Hub2"  , "bladeh21" , False))
+bodies[-1].omega[2] = 109.12
+bodies.append(Body("Blade2Hub2"  , "bladeh22" , False))
+bodies[-1].omega[2] = 109.12
+bodies.append(Body("Blade3Hub2"  , "bladeh23" , False))
+bodies[-1].omega[2] = 109.12
+bodies.append(Body("Blade4Hub2"  , "bladeh24" , False))
+bodies[-1].omega[2] = 109.12
+
+bodies.append(Body("Fuselage" , "body" , False))
 bodies.append(Body("TailAssembly" , "tail" , False))
 
 # Generate BREP file for body
