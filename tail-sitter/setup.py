@@ -45,7 +45,7 @@ class Body(object):
         self.grav = np.array([0.0,0.0,-9.81])
 
         # solid prop
-        self.density = 7200.0
+        self.density = 1.0
 
         return
     
@@ -172,7 +172,7 @@ class SolidProperties:
 ######################################################################   
 ######################################################################
 
-prefix = '/home/komahan/git/tacs-problems/tail-sitter/'
+prefix = '/home/komahan/git/tacs-problems/tail_sitter/'
 
 if not os.path.exists(prefix):
     os.makedirs(prefix)
@@ -193,26 +193,38 @@ if not os.path.exists(prefix + "bdf"):
 bodies = []
 bodies.append(Body("Hub1", "hub1" , False))
 bodies.append(Body("Blade1Hub1"  , "bladeh11" , False))
-bodies[-1].omega[2] = -109.12
+bodies[-1].omega[0] = -109.12
 bodies.append(Body("Blade2Hub1"  , "bladeh12" , False))
-bodies[-1].omega[2] = -109.12
+bodies[-1].omega[0] = -109.12
 bodies.append(Body("Blade3Hub1"  , "bladeh13" , False))
-bodies[-1].omega[2] = -109.12
+bodies[-1].omega[0] = -109.12
 bodies.append(Body("Blade4Hub1"  , "bladeh14" , False))
-bodies[-1].omega[2] = -109.12
+bodies[-1].omega[0] = -109.12
 
 bodies.append(Body("Hub2", "hub2" , False))
 bodies.append(Body("Blade1Hub2"  , "bladeh21" , False))
-bodies[-1].omega[2] = 109.12
+bodies[-1].omega[0] = 109.12
 bodies.append(Body("Blade2Hub2"  , "bladeh22" , False))
-bodies[-1].omega[2] = 109.12
+bodies[-1].omega[0] = 109.12
 bodies.append(Body("Blade3Hub2"  , "bladeh23" , False))
-bodies[-1].omega[2] = 109.12
+bodies[-1].omega[0] = 109.12
 bodies.append(Body("Blade4Hub2"  , "bladeh24" , False))
-bodies[-1].omega[2] = 109.12
+bodies[-1].omega[0] = 109.12
 
 bodies.append(Body("Fuselage" , "body" , False))
-bodies.append(Body("TailAssembly" , "tail" , False))
+bodies.append(Body("TailBase" , "tailbase" , False))
+
+# Add blade assembly
+bodies.append(Body("TailAssembly45Hub" , "tail_assembly45_hub" , False))
+bodies[-1].omega[0] = -109.12
+bodies.append(Body("TailAssembly45Blade1"  , "tail_assembly45_blade1" , False))
+bodies[-1].omega[0] = -109.12
+bodies.append(Body("TailAssembly45Blade2"  , "tail_assembly45_blade2" , False))
+bodies[-1].omega[0] = -109.12
+bodies.append(Body("TailAssembly45Blade3"  , "tail_assembly45_blade3" , False))
+bodies[-1].omega[0] = -109.12
+bodies.append(Body("TailAssembly45Blade4"  , "tail_assembly45_blade4" , False))
+bodies[-1].omega[0] = -109.12
 
 # Generate BREP file for body
 for body in bodies:
