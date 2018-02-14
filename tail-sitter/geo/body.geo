@@ -44,7 +44,7 @@ BooleanUnion(vbody1) = { Volume{vbody}; Delete;}{ Volume{vrwing}; Delete;};
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 
-Mesh.CharacteristicLengthFactor = 0.1; 
+Mesh.CharacteristicLengthFactor = 0.5; 
 Mesh.CharacteristicLengthMin = 0; 
 Mesh.CharacteristicLengthMax = 1.0; 
 Mesh.CharacteristicLengthFromCurvature = 0; 

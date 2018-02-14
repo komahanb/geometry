@@ -57,7 +57,7 @@ vtailblade1 = newv;
 BooleanDifference(vtailblade1) = { Volume{vtailbladetmp}; Delete; }{ Volume{vcone}; Delete; };
 
 // Rotate about its axis to make second blade
-out[] = Rotate {{1, 0, 0}, {xbase_assembly, ybase_assembly, zbase_assembly}, Pi}{
+out[] = Rotate {{1, 0, 0}, {xbase_assembly, ybase_assembly, zbase_assembly}, Pi/2.0}{
 Volume{vtailblade1};
 };
 vtailblade1 = out[0];
@@ -67,3 +67,23 @@ out[] = Rotate {{1, 0, 0}, {0,0,0}, 1.5*Pi + Pi/4.0} {
 Volume{vtailblade1};
 };
 vtailblade1 = out[0];
+
+// Specify mesh characteristics
+Mesh.CharacteristicLengthExtendFromBoundary = 1; 
+Mesh.CharacteristicLengthFactor = 0.1; 
+Mesh.CharacteristicLengthMin = 0; 
+Mesh.CharacteristicLengthMax = 1.0; 
+Mesh.CharacteristicLengthFromCurvature = 0; 
+Mesh.CharacteristicLengthFromPoints = 1; 
+Mesh.Optimize = 1; 
+Mesh.SubdivisionAlgorithm = 1; 
+Mesh.RecombinationAlgorithm = 1; 
+Mesh.RecombineAll = 1; 
+Mesh.RemeshAlgorithm = 0; 
+Mesh.RemeshParametrization = 0; 
+Mesh.RefineSteps = 10; 
+Mesh.Smoothing = 5;
+Mesh.ElementOrder=2; 
+Mesh.BdfFieldFormat=2; 
+Mesh.Format=31; 
+Mesh.SaveElementTagType=1;

@@ -226,6 +226,39 @@ bodies[-1].omega[0] = -109.12
 bodies.append(Body("TailAssembly45Blade4"  , "tail_assembly45_blade4" , False))
 bodies[-1].omega[0] = -109.12
 
+bodies.append(Body("TailAssembly225Hub" , "tail_assembly225_hub" , False))
+bodies[-1].omega[0] = -109.12
+bodies.append(Body("TailAssembly225Blade1"  , "tail_assembly225_blade1" , False))
+bodies[-1].omega[0] = -109.12
+bodies.append(Body("TailAssembly225Blade2"  , "tail_assembly225_blade2" , False))
+bodies[-1].omega[0] = -109.12
+bodies.append(Body("TailAssembly225Blade3"  , "tail_assembly225_blade3" , False))
+bodies[-1].omega[0] = -109.12
+bodies.append(Body("TailAssembly225Blade4"  , "tail_assembly225_blade4" , False))
+bodies[-1].omega[0] = -109.12
+
+bodies.append(Body("TailAssembly135Hub" , "tail_assembly135_hub" , False))
+bodies[-1].omega[0] = 109.12
+bodies.append(Body("TailAssembly135Blade1"  , "tail_assembly135_blade1" , False))
+bodies[-1].omega[0] = 109.12
+bodies.append(Body("TailAssembly135Blade2"  , "tail_assembly135_blade2" , False))
+bodies[-1].omega[0] = 109.12
+bodies.append(Body("TailAssembly135Blade3"  , "tail_assembly135_blade3" , False))
+bodies[-1].omega[0] = 109.12
+bodies.append(Body("TailAssembly135Blade4"  , "tail_assembly135_blade4" , False))
+bodies[-1].omega[0] = 109.12
+
+bodies.append(Body("TailAssembly315Hub" , "tail_assembly315_hub" , False))
+bodies[-1].omega[0] = 109.12
+bodies.append(Body("TailAssembly315Blade1"  , "tail_assembly315_blade1" , False))
+bodies[-1].omega[0] = 109.12
+bodies.append(Body("TailAssembly315Blade2"  , "tail_assembly315_blade2" , False))
+bodies[-1].omega[0] = 109.12
+bodies.append(Body("TailAssembly315Blade3"  , "tail_assembly315_blade3" , False))
+bodies[-1].omega[0] = 109.12
+bodies.append(Body("TailAssembly315Blade4"  , "tail_assembly315_blade4" , False))
+bodies[-1].omega[0] = 109.12
+
 # Generate BREP file for body
 for body in bodies:
     print "GEOHelper: Generating BREP file for body:", body.name
