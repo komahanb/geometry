@@ -79,7 +79,8 @@ class BDFGenerator(object):
         argument
         """
         # use the BREP file as input geoemtry file
-        geometry_file = prefix + 'brep/' +  body.geo_file + '.brep'
+        #geometry_file = prefix + 'brep/' +  body.geo_file + '.brep'
+        geometry_file = body.geo_file + '.geo'
 
         # Store where the mesh is located into the body
         body.mesh_file = prefix + 'bdf/' + body.geo_file + '.bdf'
@@ -171,7 +172,8 @@ class SolidProperties:
 ######################################################################   
 ######################################################################
 
-prefix = '/home/komahan/git/tacs-problems/hart-assembly/'
+prefix = '/home/komahan/git/tacs-problems/rotor-assembly/'
+#prefix = '/home/komahan/git/tacs-problems/hart-assembly/'
 
 if not os.path.exists(prefix):
     os.makedirs(prefix)

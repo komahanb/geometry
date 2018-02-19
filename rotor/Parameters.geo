@@ -1,13 +1,31 @@
-// Root cutout radius of blade
-cutout_radius = DefineNumber[ 0.24, Name "Parameters/cutout_radius" ];
-
-// Finally translate the objects to this origin
-xtrans = DefineNumber[ 0.7652 , Name "Parameters/xtrans" ];
-ytrans = DefineNumber[ 0.0000 , Name "Parameters/ytrans" ];
+//-------------------------------------------------------------------//
+// This file contains all the paramters defining the geometry of rotor
+// hub assembly
+//
+// Author : Komahan Boopathy (komahan@gatech.edu)
+//-------------------------------------------------------------------//
 
 // Heights of bodies normalized with respect to shaft height
-shaft_height       = DefineNumber[ 0.4 , Name "Parameters/shaft_height" ];
-ztrans = DefineNumber[ 0.796 - 0.9*shaft_height , Name "Parameters/ztrans" ];
+shaft_height = DefineNumber[ 1.0 , Name "Parameters/shaft_height" ];
+
+// use this for original model built in TACS Paper
+
+// if (tacs_paper)
+
+cutout_radius = DefineNumber[ 0.44, Name "Parameters/cutout_radius" ];  // Root cutout radius of blade
+xtrans = 0.0;
+ytrans = 0.0;
+ztrans = 0.0;
+
+// else
+
+// cutout_radius = DefineNumber[ 0.24, Name "Parameters/cutout_radius" ]; // use this for model scaled to hart
+// Finally translate the objects to this origin
+// xtrans = DefineNumber[ 0.7652 , Name "Parameters/xtrans" ];
+// ytrans = DefineNumber[ 0.0000 , Name "Parameters/ytrans" ];
+// ztrans = DefineNumber[ 0.796 - 0.9*shaft_height , Name "Parameters/ztrans" ];
+
+//end if
 
 sphere_radius      = DefineNumber[ 0.2*shaft_height , Name "Parameters/sphere_radius" ];
 base_height        = DefineNumber[ 0.1*shaft_height , Name "Parameters/base_height" ];
