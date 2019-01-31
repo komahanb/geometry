@@ -34,11 +34,11 @@ class Body(object):
 
         # These are needed for each body to create TACS
         self.mesh_file           = None
-        self.brep_file           = None        
+        self.brep_file           = None
         self.initial_conditions  = None
         self.solid_props = None
         self.mesh_numbering = 1 #'coordinate'
-        
+
         # Initial conditions
         self.velocity = np.array([0.0,0.0,0.0])
         self.omega = np.array([0.0,0.0,0.0])
@@ -48,7 +48,7 @@ class Body(object):
         self.density = 1.0
 
         return
-    
+
 class BREPGenerator(object):
     @staticmethod
     def generate(body):
@@ -57,10 +57,10 @@ class BREPGenerator(object):
         argument
         """
         # output BREP file
-        body.brep_file = prefix + 'brep/' + body.geo_file + '.brep'
+        body.brep_file = prefix + os.sep + 'brep/' + body.geo_file + '.brep'
 
         # Create BREP file
-        call(["gmsh", body.geo_file + '.geo', "-0", "-o", body.brep_file])
+        call(["gmsh", prefix + os.sep + 'geo' + os.sep + body.geo_file + '.geo', "-0", "-o", body.brep_file])
         return
 
 class BDFGenerator(object):
@@ -83,7 +83,7 @@ class BDFGenerator(object):
         geometry_file = body.geo_file + '.geo'
 
         # Store where the mesh is located into the body
-        body.mesh_file = prefix + 'bdf/' + body.geo_file + '.bdf'
+        body.mesh_file = prefix + os.sep + 'bdf/' + body.geo_file + '.bdf'
 
         # Create mesh (this does not supply any body specific options
         # defined in the .geo file)
@@ -92,7 +92,7 @@ class BDFGenerator(object):
               "-2",
               "-o", body.mesh_file,
               "-string", BDFGenerator.getGmshOptions(1)])
-        
+
         # remove cbar entries
         call(["sed", "-i", "/CBAR/d", body.mesh_file])
         return
@@ -110,28 +110,28 @@ class SolidProperties:
         Part.open(body.brep_file)
         key = os.path.basename(body.brep_file).split('.brep')[0]
         doc = App.getDocument(key)
-        doc.recompute()        
+        doc.recompute()
         shape = doc.getObject(key).Shape
         body.solid_props = shape.Solids[0]
         return
-    
+
     @staticmethod
     def writeProps(body):
         """
         Write the solid properties to file
         """
         solid = body.solid_props
-        prop_file = prefix + 'inp/' + body.geo_file + '.inp'
+        prop_file = prefix + os.sep + 'inp/' + body.geo_file + '.inp'
 
         # Store the location of prop file into the body
         body.solid_prop_file = prop_file
-        
+
         print "Creating solid property file", body.solid_prop_file
-        
+
         c = [0.0, 0.0, 0.0]
         Jmat = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         xcm = [0.0, 0.0, 0.0]
-        
+
         CTMP = [solid.StaticMoments[0],
                 solid.StaticMoments[1],
                 solid.StaticMoments[2]]
@@ -140,7 +140,7 @@ class SolidProperties:
         xcmtmp = [solid.CenterOfMass.x,
                   solid.CenterOfMass.y,
                   solid.CenterOfMass.z]
-        
+
         for i in xrange(3):
             if abs(CTMP[i]) > 1.0e-16:
                 c[i] = CTMP[i]
@@ -155,7 +155,7 @@ class SolidProperties:
         omega = body.omega
         grav = body.grav
         v = body.velocity
-        fp = open(body.solid_prop_file, 'w')   
+        fp = open(body.solid_prop_file, 'w')
         fp.write('name %s\n' % body.name)
         fp.write('density %s\n' % body.density)
         fp.write('volume %s\n' % solid.Volume)
@@ -168,27 +168,28 @@ class SolidProperties:
         fp.write('grav %s %s %s\n' % (grav[0], grav[1], grav[2]))
         fp.write('mesh %s %s\n' % (body.geo_file + '.bdf', body.mesh_numbering))
         fp.close()
-    
-######################################################################   
+
+######################################################################
 ######################################################################
 
-prefix = '/home/komahan/git/tacs-problems/tail_sitter/'
+prefix = os.getcwd()
+#prefix = '/home/komahan/git/tacs-problems/tail_sitter/'
 
 if not os.path.exists(prefix):
     os.makedirs(prefix)
-    
-# Make necessary directories for BREP/BDF/INP files
-if not os.path.exists(prefix + "brep"):
-    os.makedirs(prefix + "brep")
-    
-# Make necessary directories for BREP/BDF/INP files
-if not os.path.exists(prefix + "inp"):
-    os.makedirs(prefix + "inp")
 
 # Make necessary directories for BREP/BDF/INP files
-if not os.path.exists(prefix + "bdf"):
-    os.makedirs(prefix + "bdf")
-    
+if not os.path.exists(prefix + os.sep + "brep"):
+    os.makedirs(prefix + os.sep + "brep")
+
+# Make necessary directories for BREP/BDF/INP files
+if not os.path.exists(prefix + os.sep + "inp"):
+    os.makedirs(prefix + os.sep + "inp")
+
+# Make necessary directories for BREP/BDF/INP files
+if not os.path.exists(prefix + os.sep + "bdf"):
+    os.makedirs(prefix + os.sep + "bdf")
+
 # All the bodies to setup for simulation
 bodies = []
 bodies.append(Body("Hub1", "hub1" , False))
@@ -263,8 +264,8 @@ bodies[-1].omega[0] = 109.12
 for body in bodies:
     print "GEOHelper: Generating BREP file for body:", body.name
     BREPGenerator.generate(body)
-    
-    print "GEOHelper: Generating BREP file for body:", body.name    
+
+    print "GEOHelper: Generating BREP file for body:", body.name
     SolidProperties.generate(body)
     SolidProperties.writeProps(body)
 
