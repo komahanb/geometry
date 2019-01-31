@@ -80,7 +80,7 @@ class BDFGenerator(object):
         """
         # use the BREP file as input geoemtry file
         #geometry_file = prefix + 'brep/' +  body.geo_file + '.brep'
-        geometry_file = body.geo_file + '.geo'
+        geometry_file = prefix + os.sep + 'geo/' + body.geo_file + '.geo'
 
         # Store where the mesh is located into the body
         body.mesh_file = prefix + os.sep + 'bdf/' + body.geo_file + '.bdf'
