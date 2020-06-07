@@ -60,7 +60,9 @@ class BREPGenerator(object):
         body.brep_file = prefix + os.sep + 'brep/' + body.geo_file + '.brep'
 
         # Create BREP file
-        call(["gmsh", prefix + os.sep + 'geo' + os.sep + body.geo_file + '.geo', "-0", "-o", body.brep_file])
+        call(["gmsh",
+              prefix + os.sep + 'geo' + os.sep + body.geo_file + '.geo',
+              "-0", body.brep_file])
         return
 
 class BDFGenerator(object):
@@ -79,7 +81,6 @@ class BDFGenerator(object):
         argument
         """
         # use the BREP file as input geoemtry file
-        #geometry_file = prefix + 'brep/' +  body.geo_file + '.brep'
         geometry_file = prefix + os.sep + 'geo/' + body.geo_file + '.geo'
 
         # Store where the mesh is located into the body
@@ -89,7 +90,7 @@ class BDFGenerator(object):
         # defined in the .geo file)
         call(["gmsh", geometry_file,
               "-2",
-              "-o", body.mesh_file,
+              body.mesh_file,
               "-string", BDFGenerator.getGmshOptions(1)])
 
         # remove cbar entries
