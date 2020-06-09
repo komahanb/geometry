@@ -34,7 +34,7 @@ class Body(object):
 
         # These are needed for each body to create TACS
         self.mesh_file           = None
-        self.brep_file           = None
+        self.brep_file           = prefix + os.sep + 'brep/' + self.geo_file + '.brep'
         self.initial_conditions  = None
         self.solid_props = None
         self.mesh_numbering = 1 #'coordinate'
@@ -45,25 +45,25 @@ class Body(object):
         self.grav = np.array([0.0,0.0,0.0])
 
         # solid prop
-        self.density = 1.0
+        self.density = 2700.0
 
         return
 
-class BREPGenerator(object):
-    @staticmethod
-    def generate(body):
-        """
-        Generate the GEO file by calling GMSH for the body supplied as
-        argument
-        """
-        # output BREP file
-        body.brep_file = prefix + os.sep + 'brep/' + body.geo_file + '.brep'
-
-        # Create BREP file
-        call(["gmsh",
-              prefix + os.sep + 'geo' + os.sep + body.geo_file + '.geo',
-              "-0", body.brep_file])
-        return
+## class BREPGenerator(object):
+##     @staticmethod
+##     def generate(body):
+##         """
+##         Generate the GEO file by calling GMSH for the body supplied as
+##         argument
+##         """
+##         # output BREP file
+##         body.brep_file = prefix + os.sep + 'brep/' + body.geo_file + '.brep'
+## 
+##         # Create BREP file
+##         call(["gmsh",
+##               prefix + os.sep + 'geo' + os.sep + body.geo_file + '.geo',
+##               "-0", body.brep_file])
+##         return
 
 class BDFGenerator(object):
     @staticmethod
@@ -71,7 +71,7 @@ class BDFGenerator(object):
         '''
         These are the options that we use for our purposes in TACS
         '''
-        gmsh_string = "Mesh.Optimize = 1; Mesh.SubdivisionAlgorithm = 1; Mesh.RecombinationAlgorithm = 1; Mesh.RecombineAll = 1; Mesh.RemeshAlgorithm = 0; Mesh.RemeshParametrization = 0; Mesh.RefineSteps = 10; Mesh.ElementOrder=2; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
+        gmsh_string = "Geometry.OCCScaling=0.0001; Mesh.Optimize = 1; Mesh.SubdivisionAlgorithm = 1; Mesh.RecombinationAlgorithm = 1; Mesh.RecombineAll = 1; Mesh.RemeshAlgorithm = 0; Mesh.RemeshParametrization = 0; Mesh.RefineSteps = 10; Mesh.ElementOrder=2; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
         return gmsh_string
 
     @staticmethod
@@ -90,6 +90,7 @@ class BDFGenerator(object):
         # defined in the .geo file)
         call(["gmsh", geometry_file,
               "-2",
+              "-o",
               body.mesh_file,
               "-string", BDFGenerator.getGmshOptions(1)])
 
@@ -108,7 +109,8 @@ class SolidProperties:
         OPENCASCADE geoemtry engine
         """
         Part.open(body.brep_file)
-        key = os.path.basename(body.brep_file).split('.brep')[0]
+        old_key = os.path.basename(body.brep_file).split('.brep')[0]
+        key = old_key.replace('-', '_') # hack
         doc = App.getDocument(key)
         doc.recompute()
         shape = doc.getObject(key).Shape
@@ -119,7 +121,9 @@ class SolidProperties:
     def writeProps(body):
         """
         Write the solid properties to file
-        """
+        """        
+        scale = 1.0e-3 # convert mm to m
+        
         solid = body.solid_props
         prop_file = prefix + os.sep + 'inp/' + body.geo_file + '.inp'
 
@@ -143,22 +147,25 @@ class SolidProperties:
 
         for i in xrange(3):
             if abs(CTMP[i]) > 1.0e-16:
-                c[i] = CTMP[i]
-                xcm[i] = xcmtmp[i]
+                c[i] = CTMP[i]*scale
+                xcm[i] = xcmtmp[i]*scale
 
         for i in xrange(6):
             if abs(JTMP[i]) > 1.0e-16:
-                Jmat[i] = JTMP[i]
+                Jmat[i] = JTMP[i]*scale*scale
 
+        volume = solid.Volume
+        volume = volume*scale*scale*scale
+        
         # Assert the equivalence of xcg and c/volume
-        assert((np.allclose(np.array(xcm), np.array(c)/solid.Volume)), 1)
+        assert((np.allclose(np.array(xcm), np.array(c)/volume)), 1)
         omega = body.omega
         grav = body.grav
         v = body.velocity
         fp = open(body.solid_prop_file, 'w')
         fp.write('name %s\n' % body.name)
         fp.write('density %s\n' % body.density)
-        fp.write('volume %s\n' % solid.Volume)
+        fp.write('volume %s\n' % volume)
         fp.write('c %s %s %s\n' % (c[0], c[1], c[2]))
         fp.write('J %s %s %s %s %s %s\n' % (Jmat[0], Jmat[1], Jmat[2],
                                             Jmat[3], Jmat[4], Jmat[5]))
@@ -191,17 +198,26 @@ if not os.path.exists(prefix + os.sep + "bdf"):
 
 # All the bodies to setup for simulation
 bodies = []
-bodies.append(Body(name="Link1", geo_file="link1", processBC=False))
-bodies.append(Body(name="Link2", geo_file="link2", processBC=False))
-bodies.append(Body(name="Link3", geo_file="link3", processBC=False))
-bodies.append(Body(name="Link4", geo_file="link4", processBC=False))
-bodies.append(Body(name="Link5", geo_file="link5", processBC=False))
-bodies.append(Body(name="Link6", geo_file="link6", processBC=False))
+#bodies.append(Body(name="Link1", geo_file="link1", processBC=False))
+#bodies.append(Body(name="Link2", geo_file="link2", processBC=False))
+#bodies.append(Body(name="Link3", geo_file="link3", processBC=False))
+#bodies.append(Body(name="Link4", geo_file="link4", processBC=False))
+#bodies.append(Body(name="Link5", geo_file="link5", processBC=False))
+#bodies.append(Body(name="Link6", geo_file="link6", processBC=False))
+
+bodies.append(Body(name="Canadarm-2", geo_file="canadarm-2", processBC=False))
+bodies.append(Body(name="Canadarm-3", geo_file="canadarm-3", processBC=False))
+bodies.append(Body(name="Canadarm-4", geo_file="canadarm-4", processBC=False))
+bodies.append(Body(name="Canadarm-5", geo_file="canadarm-5", processBC=False))
+bodies.append(Body(name="Canadarm-6", geo_file="canadarm-6", processBC=False))
+bodies.append(Body(name="Canadarm-7", geo_file="canadarm-7", processBC=False))
+bodies.append(Body(name="Canadarm-8", geo_file="canadarm-8", processBC=False))
+bodies.append(Body(name="Canadarm-9", geo_file="canadarm-9", processBC=False))
 
 # Generate BREP file for body
 for body in bodies:
-    print("GEOHelper: Generating BREP file for body:", body.name)
-    BREPGenerator.generate(body)
+    # print("GEOHelper: Generating BREP file for body:", body.name)
+    # BREPGenerator.generate(body)
 
     print("GEOHelper: Generating BREP file for body:", body.name)
     SolidProperties.generate(body)
