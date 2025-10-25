@@ -41,7 +41,7 @@ class Body(object):
 
         # Initial conditions
         self.velocity = np.array([0.0,0.0,0.0])
-        self.omega = np.array([0.0,0.0,0.0])
+        self.omega = np.array([0.1,0.1,0.1])
         self.grav = np.array([0.0,0.0,0.0])
 
         # solid prop
@@ -69,7 +69,7 @@ class BDFGenerator(object):
         '''
         These are the options that we use for our purposes in TACS
         '''
-        gmsh_string = "Geometry.OCCScaling=0.001; Mesh.Optimize = 1; Mesh.SubdivisionAlgorithm = 1; Mesh.RecombinationAlgorithm = 1; Mesh.RecombineAll = 1; Mesh.RemeshAlgorithm = 0; Mesh.RemeshParametrization = 0; Mesh.RefineSteps = 10; Mesh.ElementOrder=2; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
+        gmsh_string = "Geometry.OCCScaling=1.0; Mesh.Optimize = 1; Mesh.SubdivisionAlgorithm = 1; Mesh.RecombinationAlgorithm = 1; Mesh.RecombineAll = 1; Mesh.RemeshAlgorithm = 0; Mesh.RemeshParametrization = 0; Mesh.RefineSteps = 10; Mesh.ElementOrder=2; Mesh.BdfFieldFormat=2; Mesh.Format=31; Mesh.SaveElementTagType=%d;" % tag_type
         return gmsh_string
 
     @staticmethod
@@ -176,7 +176,9 @@ class SolidProperties:
 ######################################################################
 ######################################################################
 
-prefix = os.getcwd()
+prefix = os.getcwd() #'~/git/tacs-problems/canadarm-cylinder'
+
+#prefix = '/home/komahan/git/tacs-problems/canadarm-cylinder'
 
 if not os.path.exists(prefix):
     os.makedirs(prefix)

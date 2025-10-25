@@ -22,7 +22,7 @@ Cylinder(vtmp) = {xtmp, ytmp, ztmp,
 
 // Specify mesh characteristics
 Mesh.CharacteristicLengthExtendFromBoundary = 1; 
-Mesh.CharacteristicLengthFactor = 0.5; 
+Mesh.CharacteristicLengthFactor = 0.3; 
 Mesh.CharacteristicLengthMin = 0; 
 Mesh.CharacteristicLengthMax = 1.0; 
 Mesh.CharacteristicLengthFromCurvature = 0; 
