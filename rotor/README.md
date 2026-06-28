@@ -93,7 +93,15 @@ python pygeo/lpl30.py  --param pitchlink_length=0.3 --mesh   # override a parame
 
 CLI flags (shared by all parts): `--mesh`, `--mesh-dim {1,2,3}`, `--mesh-file PATH`,
 `--export PATH` (repeatable; format from extension: `.brep`/`.iges`/`.step`/`.bdf`/`.msh`),
-`--param NAME=VALUE` (repeatable), `--show` (FLTK viewer).
+`--param NAME=VALUE` (repeatable), `--show` (open a viewer).
+
+> **`--show` and the pip `gmsh` wheel.** The PyPI `gmsh` wheel is built
+> *without* the FLTK GUI (`gmsh.fltk.isAvailable()` is 0), so `--show` cannot
+> open a window in-process.  When that is the case it transparently writes the
+> model to a temporary `.brep` and launches a standalone GUI `gmsh` binary on
+> it (e.g. a system `/usr/bin/gmsh`, found on `PATH`).  If no GUI gmsh is
+> installed it prints a warning instead of failing silently — export the
+> geometry with `--export`/`--out` and open it in a GUI gmsh or FreeCAD.
 
 ### Programmatic use
 
@@ -136,7 +144,7 @@ python assemble.py --breps /tmp/rotor_parts/        # also keep the per-part BRE
 python assemble.py --param cutout_radius=0.5 \
                    --out /tmp/rotor_big.brep         # rescale the whole rotor
 python assemble.py --mesh --out /tmp/rotor.msh       # 3-D mesh the assembly (slow)
-python assemble.py --show                            # FLTK viewer
+python assemble.py --show                            # open a viewer (see note below)
 ```
 
 The merged model holds 26 solids spanning `x,y ∈ [-2, 2]` (blade tips at the

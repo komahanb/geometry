@@ -11,11 +11,92 @@ required by AGENTS.md.
 import argparse
 import gmsh
 import os
+import shutil
+import subprocess
 import sys
-from typing import Dict, Iterable, Protocol
+import tempfile
+from typing import Dict, Iterable, Optional, Protocol
 
 DEFAULT_MESH_DIM = 3
 _PARTS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Extensions a standalone gmsh GUI can open directly.
+_VIEWABLE_EXTS = (".brep", ".step", ".stp", ".iges", ".igs", ".msh")
+
+
+def find_gui_gmsh() -> Optional[str]:
+    """Return the path to a GUI-capable standalone ``gmsh`` binary, if any.
+
+    The pip ``gmsh`` wheel ships a GUI-less library (``gmsh.fltk.isAvailable()``
+    is 0) and a tiny Python launcher script of the same name, so we look for a
+    real compiled binary (ELF/Mach-O) on PATH and in the usual system
+    locations, skipping that script.
+    """
+    seen = set()
+    path_dirs = os.environ.get("PATH", "").split(os.pathsep)
+    candidates = [shutil.which("gmsh")] + [
+        os.path.join(d, "gmsh")
+        for d in path_dirs + ["/usr/bin", "/usr/local/bin", "/opt/gmsh/bin"]
+    ]
+    for cand in candidates:
+        if not cand or cand in seen:
+            continue
+        seen.add(cand)
+        if not (os.path.isfile(cand) and os.access(cand, os.X_OK)):
+            continue
+        try:
+            with open(cand, "rb") as handle:
+                magic = handle.read(4)
+        except OSError:
+            continue
+        # Real binaries start with ELF (Linux) or Mach-O magic; the pip
+        # launcher starts with "#!" (a shebang) and is skipped.
+        if magic[:4] == b"\x7fELF" or magic[:4] in (
+            b"\xcf\xfa\xed\xfe", b"\xfe\xed\xfa\xcf", b"\xca\xfe\xba\xbe"
+        ):
+            return cand
+    return None
+
+
+def show_model(path_hint: Optional[str] = None) -> bool:
+    """Display the current model, returning ``True`` if a viewer was opened.
+
+    Prefers the in-process FLTK viewer; if this gmsh build lacks it, writes the
+    model to a viewable file (reusing ``path_hint`` when it already is one) and
+    launches a standalone GUI gmsh on it.  Warns and returns ``False`` if no
+    viewer is available rather than failing silently.
+    """
+    if hasattr(gmsh, "fltk") and gmsh.fltk.isAvailable():
+        gmsh.fltk.initialize()
+        gmsh.fltk.run()
+        return True
+
+    binary = find_gui_gmsh()
+    if binary is None:
+        gmsh.logger.write(
+            "Cannot --show: this gmsh Python build has no FLTK viewer and no "
+            "standalone GUI gmsh was found on PATH. Export the geometry "
+            "(--export/--out) and open it in a GUI gmsh or FreeCAD.",
+            level="warning",
+        )
+        return False
+
+    path = path_hint
+    if not path or os.path.splitext(path)[1].lower() not in _VIEWABLE_EXTS:
+        handle, path = tempfile.mkstemp(suffix=".brep", prefix="gmsh_show_")
+        os.close(handle)
+        gmsh.write(path)
+    gmsh.logger.write(f"Opening {path} in {binary}")
+    # Fire-and-forget: detach from our stdio and process group so the viewer
+    # outlives this script without holding our pipes open.
+    subprocess.Popen(
+        [binary, path],
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    return True
 
 
 class GeometryBuilder(Protocol):
@@ -164,8 +245,12 @@ def run(
         if args.mesh:
             _write(args.mesh_file or default_mesh_path(default_mesh_name))
 
-        if args.show and hasattr(gmsh, "fltk") and gmsh.fltk.isAvailable():
-            gmsh.fltk.initialize()
-            gmsh.fltk.run()
+        if args.show:
+            # Reuse an exported/meshed file for the viewer when one exists.
+            hint = next(
+                (p for p in args.export if os.path.splitext(p)[1].lower() in _VIEWABLE_EXTS),
+                args.mesh_file if args.mesh else None,
+            )
+            show_model(hint)
     finally:
         gmsh.finalize()

@@ -39,6 +39,7 @@ from rotor.parts import create_part
 from rotor.parts.cli import (
     configure_mesh_options,
     parse_parameter_overrides,
+    show_model,
 )
 
 # The 26 components of the four-blade rotor, in the order of
@@ -128,9 +129,8 @@ def main(argv=None):
             if directory and not os.path.exists(directory):
                 os.makedirs(directory, exist_ok=True)
             gmsh.write(args.out)
-        if args.show and hasattr(gmsh, "fltk") and gmsh.fltk.isAvailable():
-            gmsh.fltk.initialize()
-            gmsh.fltk.run()
+        if args.show:
+            show_model(args.out)
     finally:
         gmsh.finalize()
 
