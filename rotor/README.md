@@ -53,10 +53,15 @@ component with `gmsh.model.occ.*`. Shared layers are ported once:
 | Base plate | `BasePlateGeometry` | `CreateBasePlate` | ✅ ported |
 | Pitch link | `PitchLinkGeometry` | `CreateLowerPitchLink` | ✅ ported |
 | Blade | `BladeGeometry` | `CreateBladeX` | ✅ ported |
-| Swash plates, push rods, horns, caps, sphere, … | — | `CreateComponents.geo` | ⏳ pending |
+| Upper swash plate (2-arm) | `DoubleUpperSwashPlateGeometry` | `CreateDoubleUpperSwashPlate` | ✅ ported |
+| Upper swash plate (4-arm) | `FourUpperSwashPlateGeometry` | `CreateFourUpperSwashPlate` | ✅ ported |
+| Lower swash plate | `LowerSwashPlateGeometry` | `CreateLowerSwashPlate` | ✅ ported |
+| Push rods, horns, caps, sphere, … | — | `CreateComponents.geo` | ⏳ pending |
 
 The remaining `geo/*.geo` components still have only thin `pygeo/*.py` loaders;
-port them to `rotor.parts` classes following the four above.
+port them to `rotor.parts` classes following the ones above.  The three swash
+plates share a single `swashplate.py` recipe (one connector arm fused to the
+disc, copied to its azimuths, with a spherical recess scooped from the centre).
 
 ### Command-line use
 
@@ -83,7 +88,7 @@ CLI flags (shared by all parts): `--mesh`, `--mesh-dim {1,2,3}`, `--mesh-file PA
 from rotor.parts import available_parts, create_part
 from rotor.parts.blade import BladeGeometry
 
-available_parts()                         # ['hub4b', 'baseplate', 'blade', 'pitchlink']
+available_parts()                         # ['hub4b', 'baseplate', 'blade', 'pitchlink', 'usp2b', 'usp4b', 'lsp']
 geom = create_part("blade", {"blade_tip_radius": 2.5})
 # or: geom = BladeGeometry({"blade_tip_radius": 2.5})
 

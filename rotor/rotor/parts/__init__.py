@@ -12,12 +12,20 @@ from .hub4b import Hub4BGeometry
 from .baseplate import BasePlateGeometry
 from .blade import BladeGeometry
 from .pitchlink import PitchLinkGeometry
+from .swashplate import (
+    DoubleUpperSwashPlateGeometry,
+    FourUpperSwashPlateGeometry,
+    LowerSwashPlateGeometry,
+)
 
 PARTS_REGISTRY: Dict[str, type] = {
     "hub4b": Hub4BGeometry,
     "baseplate": BasePlateGeometry,
     "blade": BladeGeometry,
     "pitchlink": PitchLinkGeometry,
+    "usp2b": DoubleUpperSwashPlateGeometry,
+    "usp4b": FourUpperSwashPlateGeometry,
+    "lsp": LowerSwashPlateGeometry,
 }
 """Mapping from part identifiers to their geometry classes."""
 
@@ -27,6 +35,9 @@ __all__ = [
     "BasePlateGeometry",
     "BladeGeometry",
     "PitchLinkGeometry",
+    "DoubleUpperSwashPlateGeometry",
+    "FourUpperSwashPlateGeometry",
+    "LowerSwashPlateGeometry",
     "available_parts",
     "create_part",
 ]
