@@ -1,0 +1,14 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Generated meshes / analysis artifacts
+*.msh
+*.vtk
+*.bdf
+*.msh_*
+*-mesh.zip
+
+# Editor / tool backups
+*~
+\#*\#
