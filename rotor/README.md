@@ -118,6 +118,48 @@ Overrides accept any base or derived key from `parameters.py` (e.g.
 keys (`aoffset`/`theta` for the pitch link; `blade_chord`, `blade_tip_radius`,
 `azimuth`, … for the blade).
 
+## Worked example — assembling the four-blade rotor
+
+`assemble.py` builds the **complete four-blade rotor** from the parametric
+parts and is the recommended starting point.  Each part builds in its own gmsh
+model, so the assembly is produced exactly like the legacy `brep/assemble.geo`:
+export every component to BREP, then merge the BREPs into one model.  The
+component list (`FOUR_BLADE_ROTOR`, 26 bodies) mirrors `four_blade_assembly.geo`
+— base plate, four-blade hub, sphere, both swash plates, three push rods, the
+two push horns, four blades + caps, and the four lower/upper pitch links.
+
+```bash
+# From the rotor/ directory:
+python assemble.py --out /tmp/rotor.brep            # merged geometry (26 solids)
+python assemble.py --out /tmp/rotor.step            # STEP instead (format by ext)
+python assemble.py --breps /tmp/rotor_parts/        # also keep the per-part BREPs
+python assemble.py --param cutout_radius=0.5 \
+                   --out /tmp/rotor_big.brep         # rescale the whole rotor
+python assemble.py --mesh --out /tmp/rotor.msh       # 3-D mesh the assembly (slow)
+python assemble.py --show                            # FLTK viewer
+```
+
+The merged model holds 26 solids spanning `x,y ∈ [-2, 2]` (blade tips at the
+2 m tip radius) and `z ∈ [0, 1]` (the shaft height).
+
+Programmatic use mirrors the CLI:
+
+```python
+import gmsh
+from assemble import assemble, FOUR_BLADE_ROTOR, export_breps
+
+gmsh.initialize()
+solids = assemble(FOUR_BLADE_ROTOR)          # -> [(3, tag), ...] in model "assembly"
+# assemble(FOUR_BLADE_ROTOR, {"cutout_radius": 0.5})   # with parameter overrides
+# export_breps(FOUR_BLADE_ROTOR, "parts/")             # just the per-part BREPs
+gmsh.write("rotor.brep")
+gmsh.finalize()
+```
+
+Build a different rotor by passing your own part list (any names from
+`available_parts()`) — e.g. the two-blade rotor swaps `hub4b`→`hub2b`, `usp4b`→
+`usp2b`, and drops the 90/270 blades, caps and their pitch links.
+
 ## Assembly and inertial properties
 
 The downstream multibody workflow consumes per-component BREP/mesh:
