@@ -131,6 +131,10 @@ def rotor_parameters(overrides: Mapping[str, float] | None = None) -> Dict[str, 
         "hub_conn_length", 0.05 * (cutout_radius - params["hub_radius"])
     )
     params.setdefault("hub_conn_radius", params["blade_conn_radius"])
+    # Hub-to-blade connector reach (used by the upper pitch link).
+    params.setdefault(
+        "hub_blade_conn_length", 0.85 * (cutout_radius - params["hub_radius"])
+    )
 
     # Push horn dimensions (used by lph/uph; included for completeness).
     params.setdefault("pushrod_angle", math.pi / 4.0)

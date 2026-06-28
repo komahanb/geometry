@@ -16,12 +16,17 @@ import math
 from typing import Dict, Iterable, Tuple
 
 from . import cli
-from .airfoil import naca4_profile
+from .airfoil import naca4_profile, naca4_blunt_profile
 from .parameters import rotor_parameters, require_positive
 
 
 class BladeGeometry:
     """Build a rotor blade using an extruded NACA-4 section."""
+
+    model_name = "blade0"
+    azimuth = 0.0  # blade azimuthal placement (radians)
+    profile_builder = staticmethod(naca4_profile)
+    physical_name = "Blade"
 
     def __init__(self, parameters: Dict[str, float] | None = None) -> None:
         self.parameters = rotor_parameters(parameters)
@@ -29,8 +34,8 @@ class BladeGeometry:
             self.parameters.setdefault(key, value)
         self.validate_parameters()
 
-    @staticmethod
-    def blade_defaults() -> Dict[str, float]:
+    @classmethod
+    def blade_defaults(cls) -> Dict[str, float]:
         """Blade-specific defaults hard-coded in ``CreateBladeX``."""
         return {
             "blade_chord": 0.121,
@@ -40,7 +45,7 @@ class BladeGeometry:
             "blade_thickness": 12.0,  # percent of chord
             "blade_nspl": 4,
             "blade_pps": 5,
-            "azimuth": 0.0,  # blade azimuthal placement (radians)
+            "azimuth": cls.azimuth,  # blade azimuthal placement (radians)
         }
 
     @classmethod
@@ -86,7 +91,7 @@ class BladeGeometry:
         }
 
         # Airfoil section in the chord/thickness plane at the tip station.
-        surface, _loop = naca4_profile(occ, section)
+        surface, _loop = self.profile_builder(occ, section)
 
         # Lay the section flat about the coordinate-system origin.
         occ.rotate(
@@ -125,20 +130,74 @@ class BladeGeometry:
         occ.synchronize()
 
         physical_tag = gmsh.model.addPhysicalGroup(3, [blade])
-        gmsh.model.setPhysicalName(3, physical_tag, "Blade")
+        gmsh.model.setPhysicalName(3, physical_tag, self.physical_name)
 
         return blade, {}
 
 
+class Blade90Geometry(BladeGeometry):
+    """Blade at 90 degrees (``blade90`` -> ``CreateBladeY``)."""
+
+    model_name = "blade90"
+    azimuth = math.pi / 2.0
+    physical_name = "Blade90"
+
+
+class Blade180Geometry(BladeGeometry):
+    """Blade at 180 degrees (``blade180`` -> ``CreateBladeNegativeX``)."""
+
+    model_name = "blade180"
+    azimuth = math.pi
+    physical_name = "Blade180"
+
+
+class Blade270Geometry(BladeGeometry):
+    """Blade at 270 degrees (``blade270`` -> ``CreateBladeNegativeY``)."""
+
+    model_name = "blade270"
+    azimuth = -math.pi / 2.0
+    physical_name = "Blade270"
+
+
+class BluntBladeGeometry(BladeGeometry):
+    """Blade with a blunt trailing edge (``blade_blunt``).
+
+    The rotor model's ``geo/blade_blunt.geo`` called an undefined
+    ``CreateBladeBluntEdge``; this reuses the blade build with the blunt
+    trailing-edge section from :func:`rotor.parts.airfoil.naca4_blunt_profile`
+    (see the standalone ``blunt_blade/`` design).
+    """
+
+    model_name = "blade_blunt"
+    profile_builder = staticmethod(naca4_blunt_profile)
+    physical_name = "BluntBlade"
+
+
+def _make_main(geometry_class, description: str):
+    """Build a CLI ``main`` bound to one blade class."""
+
+    def main(argv: Iterable[str] | None = None) -> None:
+        cli.run(
+            geometry_class,
+            description=description,
+            default_mesh_name=f"{geometry_class.model_name}.msh",
+            model_name=geometry_class.model_name,
+            argv=argv,
+        )
+
+    return main
+
+
+main_blade0 = _make_main(BladeGeometry, "Construct a rotor blade using gmsh.")
+main_blade90 = _make_main(Blade90Geometry, "Construct the 90-degree blade using gmsh.")
+main_blade180 = _make_main(Blade180Geometry, "Construct the 180-degree blade using gmsh.")
+main_blade270 = _make_main(Blade270Geometry, "Construct the 270-degree blade using gmsh.")
+main_blade_blunt = _make_main(BluntBladeGeometry, "Construct the blunt-edge blade using gmsh.")
+
+
 def main(argv: Iterable[str] | None = None) -> None:
-    """CLI entrypoint for generating, exporting or meshing the blade."""
-    cli.run(
-        BladeGeometry,
-        description="Construct a rotor blade using gmsh.",
-        default_mesh_name="blade0.msh",
-        model_name="blade0",
-        argv=argv,
-    )
+    """Default CLI entrypoint builds the base (0-degree) blade."""
+    main_blade0(argv)
 
 
 if __name__ == "__main__":

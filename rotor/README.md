@@ -47,21 +47,34 @@ component with `gmsh.model.occ.*`. Shared layers are ported once:
 
 ### Ported components
 
-| Part | Class | Legacy source | Status |
+Every `CreateComponents.geo` component now has a parametric `rotor.parts`
+class.  Azimuthal variants (the 90/180/270 blades and caps, the 120/210/300
+pitch links, …) are subclasses of a base part that only override a placement
+angle, so they reuse one build recipe.
+
+| Part | Class(es) | Legacy source | Status |
 |---|---|---|---|
 | Four-blade hub | `Hub4BGeometry` | `CreateFourBladeHub` | ✅ ported |
+| Two-blade hub | `DoubleBladeHubGeometry` | `CreateDoubleBladeHub` | ✅ ported |
 | Base plate | `BasePlateGeometry` | `CreateBasePlate` | ✅ ported |
-| Pitch link | `PitchLinkGeometry` | `CreateLowerPitchLink` | ✅ ported |
-| Blade | `BladeGeometry` | `CreateBladeX` | ✅ ported |
+| Blade (+ 90/180/270, blunt) | `BladeGeometry`, `Blade90/180/270Geometry`, `BluntBladeGeometry` | `CreateBladeX/Y/NegativeX/NegativeY` | ✅ ported |
+| Blade caps (0/90/180/270) | `BladeCap0/90/180/270Geometry` | `CreateBladeCapX/Y/NegativeX/NegativeY` | ✅ ported |
+| Lower pitch link (+ 120/210/300) | `PitchLinkGeometry`, `LowerPitchLink120/210/300Geometry` | `CreateLowerPitchLink` | ✅ ported |
+| Upper pitch link (+ 120/210/300) | `UpperPitchLinkGeometry`, `UpperPitchLink120/210/300Geometry` | `CreateUpperPitchLink` | ✅ ported |
+| Push rods (90/180/270) | `PushRod90/180/270Geometry` | `CreatePushRod90/180/270` | ✅ ported |
+| Push horns (lower/upper) | `LowerPushHornGeometry`, `UpperPushHornGeometry` | `CreateLower/UpperPushHorn` | ✅ ported |
+| Centre sphere | `SphereGeometry` | `CreateSphere` | ✅ ported |
 | Upper swash plate (2-arm) | `DoubleUpperSwashPlateGeometry` | `CreateDoubleUpperSwashPlate` | ✅ ported |
 | Upper swash plate (4-arm) | `FourUpperSwashPlateGeometry` | `CreateFourUpperSwashPlate` | ✅ ported |
 | Lower swash plate | `LowerSwashPlateGeometry` | `CreateLowerSwashPlate` | ✅ ported |
-| Push rods, horns, caps, sphere, … | — | `CreateComponents.geo` | ⏳ pending |
 
-The remaining `geo/*.geo` components still have only thin `pygeo/*.py` loaders;
-port them to `rotor.parts` classes following the ones above.  The three swash
-plates share a single `swashplate.py` recipe (one connector arm fused to the
-disc, copied to its azimuths, with a spherical recess scooped from the centre).
+> **Notes.** The three swash plates share one `swashplate.py` recipe (a
+> connector arm fused to the disc, copied to its azimuths, with a spherical
+> recess scooped from the centre).  Push rods are built in a canonical frame
+> and rotated into place to dodge a gmsh 4.x periodic-seam meshing bug on
+> world-x-aligned cylinders.  The blunt blade reproduces the standalone
+> `blunt_blade/` section because the rotor model's `geo/blade_blunt.geo`
+> referenced an undefined `CreateBladeBluntEdge`.
 
 ### Command-line use
 
@@ -88,7 +101,7 @@ CLI flags (shared by all parts): `--mesh`, `--mesh-dim {1,2,3}`, `--mesh-file PA
 from rotor.parts import available_parts, create_part
 from rotor.parts.blade import BladeGeometry
 
-available_parts()                         # ['hub4b', 'baseplate', 'blade', 'pitchlink', 'usp2b', 'usp4b', 'lsp']
+available_parts()                         # ['hub4b', 'hub2b', 'baseplate', 'blade', 'blade90', ..., 'usp2b', 'usp4b', 'lsp']
 geom = create_part("blade", {"blade_tip_radius": 2.5})
 # or: geom = BladeGeometry({"blade_tip_radius": 2.5})
 
