@@ -72,9 +72,12 @@ angle, so they reuse one build recipe.
 > connector arm fused to the disc, copied to its azimuths, with a spherical
 > recess scooped from the centre).  Push rods are built in a canonical frame
 > and rotated into place to dodge a gmsh 4.x periodic-seam meshing bug on
-> world-x-aligned cylinders.  The blunt blade reproduces the standalone
-> `blunt_blade/` section because the rotor model's `geo/blade_blunt.geo`
-> referenced an undefined `CreateBladeBluntEdge`.
+> world-x-aligned cylinders.  Blade azimuth is folded into the pre-extrude
+> section orientation (not applied to the finished volume) so the structured
+> recombined extrude survives — rotating the extruded solid instead drops the
+> structured mesh and explodes the blade to millions of tets.  The blunt blade
+> reproduces the standalone `blunt_blade/` section because the rotor model's
+> `geo/blade_blunt.geo` referenced an undefined `CreateBladeBluntEdge`.
 
 ### Command-line use
 

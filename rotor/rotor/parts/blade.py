@@ -93,7 +93,15 @@ class BladeGeometry:
         # Airfoil section in the chord/thickness plane at the tip station.
         surface, _loop = self.profile_builder(occ, section)
 
-        # Lay the section flat about the coordinate-system origin.
+        # Fold the azimuthal placement into the pre-extrude orientation: lay the
+        # section flat (-90 deg) AND rotate it to its bay angle in one step, then
+        # extrude along the matching (azimuth-rotated) span vector.  Rotating the
+        # *extruded* volume afterwards instead drops gmsh's structured-extrude
+        # mesh and explodes the rotated blades to millions of tets; building the
+        # structured extrude directly in the final orientation is geometrically
+        # identical (a rotated extrusion = extruding the rotated section along
+        # the rotated vector) but keeps the clean recombined mesh.
+        azimuth = p["azimuth"]
         occ.rotate(
             [(2, surface)],
             p["xo"],
@@ -102,26 +110,22 @@ class BladeGeometry:
             0.0,
             0.0,
             1.0,
-            -math.pi / 2.0,
+            -math.pi / 2.0 + azimuth,
         )
 
-        # Extrude spanwise from tip toward the root cutout (negative x).
+        # Extrude spanwise from tip toward the root cutout (the -x span vector
+        # rotated by the azimuth).
         num_layers = max(int(round((tip_radius - r_cutout) / cl)), 1)
+        span = r_cutout - tip_radius
         extruded = occ.extrude(
             [(2, surface)],
-            r_cutout - tip_radius,
-            0.0,
+            span * math.cos(azimuth),
+            span * math.sin(azimuth),
             0.0,
             numElements=[num_layers],
             recombine=True,
         )
         blade = next(tag for dim, tag in extruded if dim == 3)
-
-        # Optional azimuthal placement (blade90/180/270 reuse this class).
-        if abs(p["azimuth"]) > 1.0e-12:
-            occ.rotate(
-                [(3, blade)], p["xo"], p["yo"], p["zo"], 0.0, 0.0, 1.0, p["azimuth"]
-            )
 
         translation = (p["xtrans"], p["ytrans"], p["ztrans"])
         if any(abs(c) > 1.0e-12 for c in translation):
